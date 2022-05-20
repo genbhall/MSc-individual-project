@@ -1,6 +1,4 @@
 # Anomaly detection algorithms for prolonging independent living for the aging population (Collaboration with Gulden Uchyigit)
-Proposer
-Imperial Individual Project
 
 Anomaly detection algorithms for prolonging independent living for the aging population (Collaboration with Gulden Uchyigit)
 Proposer
