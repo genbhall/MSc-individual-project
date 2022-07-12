@@ -1,6 +1,8 @@
 import pandas as pd
 from preprocessing import create_cumulativeTime_col, convert_to_timeseries
 
+#file processes selected csv files from HH series in CASAS to binary time series of activities 
+
 def example_main():
 
     #target variables (to change if necessary)
@@ -15,7 +17,7 @@ def example_main():
     #window_60s
     ts_df = convert_to_timeseries(df, 60, 'cumulativeTime', 'activity')
 
-    ts_df.to_csv("hh101_preprocessed_60sw.csv")
+    ts_df.to_csv("processed_data/hh101_preprocessed_60sw.csv")
 
 if __name__ == "__main__":
     example_main()
