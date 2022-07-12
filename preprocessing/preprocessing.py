@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from datetime import date
 
+pd.options.mode.chained_assignment = None  # default='warn'
+
 #takes in dataframe from HH series - adds new column in pandas with cumulative time across the dataset
 def create_cumulativeTime_col(df):
     
@@ -27,52 +29,56 @@ def convert_to_timeseries(df, interval, col_time, col_activity):
 
     # create new timeseries dataframe with activities as input
     activity_array = df[col_activity].unique()
-    activity_array = np.insert(activity_array,0 ,'Time')
+    activity_array = np.insert(activity_array,0,'Time')
     ts_df = pd.DataFrame(columns=activity_array)
 
-    print(df)
     row_tracker = 0
+    df_tracker = 0
 
-    # first test with value, then loop across all.
-    time_t = min_time
-    # for time in range(min_time, max_time, interval):
+    for time_t in range(min_time, max_time, interval):
 
-    activities_dict = {}
-    
-    print(time_t)
-
-    # this is to gather the remaining seconds activity from previous search
-    if row_tracker > 0:
+        # create new rows in dataframe - all 0s, set time to timestamp
+        ts_df = ts_df.append(pd.Series(0, index=ts_df.columns), ignore_index=True)
+        ts_df['Time'][df_tracker] = time_t
         
-        # add the last activity of previous search to the dictionary if it does not already exist
-        add_to_dict(activities_dict,df[col_activity][row_tracker-1])
-
-        # add that remaining time to the dictionary
-        activities_dict[df[col_activity][row_tracker]] = df[col_time][row_tracker] - (time_t - interval)
-
-    # Then move to next activities
-    # This gets the range of rows that fall into the range of the time bracket. (exclusive end)
-    while df[col_time][row_tracker] < time_t:
+        #next lines is to find the dominant activity in the time slot and add it to the tracker
+        activities_dict = {}
+        
+        # this is to gather the remaining seconds activity from previous search
+        if row_tracker > 0:
             
-        # add the activity to the dictionary if it does not already exist
-        add_to_dict(activities_dict,df[col_activity][row_tracker])
+            # add the last activity of previous search to the dictionary if it does not already exist
+            add_to_dict(activities_dict,df[col_activity][row_tracker-1])
 
-        # get the incremental time the activity has been going on from since previous row
-        activity_seconds = 0    
-        if df[col_time][row_tracker+1] < time_t:
-            activity_seconds = df[col_time][row_tracker+1] - df[col_time][row_tracker]
-        else:
-            activity_seconds = time_t - df[col_time][row_tracker]
+            # add that remaining time to the dictionary
+            activities_dict[df[col_activity][row_tracker]] = df[col_time][row_tracker] - (time_t - interval)
 
-        print(activity_seconds)
-        # then add it onto the dictionary of activities for the category
-        activities_dict[df[col_activity][row_tracker]] += activity_seconds
+        # Then move to next activities
+        # This gets the range of rows that fall into the range of the time bracket. (exclusive end)
+        while df[col_time][row_tracker] < time_t:
+                
+            # add the activity to the dictionary if it does not already exist
+            add_to_dict(activities_dict,df[col_activity][row_tracker])
 
-        # increment the row
-        row_tracker += 1
+            # get the incremental time the activity has been going on from since previous row
+            activity_seconds = 0    
+            if df[col_time][row_tracker+1] < time_t:
+                activity_seconds = df[col_time][row_tracker+1] - df[col_time][row_tracker]
+            else:
+                activity_seconds = time_t - df[col_time][row_tracker]
 
-    #now select the highest weighted activity in the dictionary
-    activity = max(activities_dict, key=activities_dict.get)
-    print(activity)    
+            # then add it onto the dictionary of activities for the category
+            activities_dict[df[col_activity][row_tracker]] += activity_seconds
 
-        #get all the rows within the range
+            # increment the row
+            row_tracker += 1
+
+        # now select the highest weighted activity in the dictionary
+        activity = max(activities_dict, key=activities_dict.get)
+        
+        #set time stamp and target activity to 1 
+        ts_df[activity][df_tracker] = 1
+
+        df_tracker += 1
+
+    return ts_df

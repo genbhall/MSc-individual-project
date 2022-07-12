@@ -5,9 +5,6 @@ def example_main():
 
     #target variables (to change if necessary)
     filename = "../CASAS_dataset/23_HH101/hh101.ann.features.csv"
-    column_headers = ['lastSensorEventHours', 'lastSensorEventSeconds', 'lastSensorDayOfWeek',
-       'windowDuration', 'timeSinceLastSensorEvent', 'cumulativeTime','activity']
-    activities = 'sleeping'
 
     #read the CSV file
     df = pd.read_csv(filename)
@@ -15,7 +12,10 @@ def example_main():
     #cumulativeTime column created from day1 000 (equivalent to first second of first day)
     df = create_cumulativeTime_col(df)
 
-    convert_to_timeseries(df, 60, 'cumulativeTime', 'activity')
+    #window_60s
+    ts_df = convert_to_timeseries(df, 60, 'cumulativeTime', 'activity')
+
+    ts_df.to_csv("hh101_preprocessed_60sw.csv")
 
 if __name__ == "__main__":
     example_main()
