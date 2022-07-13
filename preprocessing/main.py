@@ -14,10 +14,12 @@ def example_main():
     #cumulativeTime column created from day1 000 (equivalent to first second of first day)
     df = create_cumulativeTime_col(df)
 
-    #window_60s
-    ts_df = convert_to_timeseries(df, 60, 'cumulativeTime', 'activity')
+    window_period = 1800
 
-    ts_df.to_csv("processed_data/hh101_preprocessed_60sw.csv")
+    #window_1800s
+    ts_df = convert_to_timeseries(df, window_period, 'cumulativeTime', 'activity')
+
+    ts_df.to_csv("processed_data/hh101_preprocessed_1800sw.csv")
 
 if __name__ == "__main__":
     example_main()
