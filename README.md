@@ -33,3 +33,14 @@ The experiments will be carried out using publicly available CASAS datasets, ava
 
 
 source /vol/bitbucket/gbh21/indiv_proj/bin/activate
+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
+
+model source:
+
+@inproceedings{geiger2020tadgan,
+  title={TadGAN: Time Series Anomaly Detection Using Generative Adversarial Networks},
+  author={Geiger, Alexander and Liu, Dongyu and Alnegheimish, Sarah and Cuesta-Infante, Alfredo and Veeramachaneni, Kalyan},
+  booktitle={2020 IEEE International Conference on Big Data (IEEE BigData)},
+  organization={IEEE},
+  year={2020}
+}

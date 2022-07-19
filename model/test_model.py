@@ -1,12 +1,16 @@
 from orion import Orion
 import pandas as pd
 from output_utils.utils import plot
+from supporting_func.key_variables import all_activities
+from config.model import hyperparameters
+from orion.primitives.tadgan import TadGAN
 
 if __name__ == "__main__":
     
     filename = "../preprocessing/processed_data/hh101_preprocessed_60sw.csv"
     df = pd.read_csv(filename)
-    df = df[['Time', 'Sleep']]
+    df = df[all_activities]
+
     orion = Orion(pipeline='config/tadgan.json')
     anomalies = orion.fit_detect(df)
     plot(df,[anomalies])
