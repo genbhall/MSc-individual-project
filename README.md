@@ -30,3 +30,6 @@ Traditional methods to be explored will include DBSCAN, KNN, Principal Component
 
 Data Sets
 The experiments will be carried out using publicly available CASAS datasets, available from the Centre for Advanced Adaptive Systems, Washington State University. These datasets contain the Active Daily Living (ADL) of both individual and group occupants. Activities included include sleeping eating, bathing, dressing, toileting etc.
+
+
+source /vol/bitbucket/gbh21/indiv_proj/bin/activate

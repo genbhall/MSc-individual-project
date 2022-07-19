@@ -1,2 +1,3 @@
 CASAS_dataset/
 .venv/
+preprocessing/processed_data
