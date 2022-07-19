@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from datetime import date
+import datetime
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -82,3 +82,10 @@ def convert_to_timeseries(df, interval, col_time, col_activity):
         df_tracker += 1
 
     return ts_df
+
+def add_datetime_column(df, start_date):
+
+    df['Date'] = df['Time'].apply(lambda date: start_date + datetime.timedelta(seconds = date))
+    col_to_move = df.pop('Date')
+    df.insert(1,"Date",col_to_move)
+    return df
