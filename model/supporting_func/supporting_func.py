@@ -11,5 +11,5 @@ def save_model(trained_model):
 def load_model():
     with open('trained_model.pickle', 'rb') as target:
         trained_model = pickle.load(target)
-    print("\nLoaded model in part2_model.pickle\n")
+    print("\nLoaded model in trained_model.pickle\n")
     return trained_model
