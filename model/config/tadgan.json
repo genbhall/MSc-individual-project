@@ -12,7 +12,7 @@
     "init_params": {
         "mlprimitives.custom.timeseries_preprocessing.time_segments_aggregate#1": {
             "time_column": "Time",
-            "interval": 60,
+            "interval": 1800,
             "method": "mean"
         },
         "sklearn.preprocessing.MinMaxScaler#1": {
@@ -31,7 +31,7 @@
             "axis": 2
         },
         "orion.primitives.tadgan.TadGAN#1": {
-            "epochs": 10,
+            "epochs": 1,
             "input_shape":[100, 35],
             "target_shape": [100, 1]
         },
