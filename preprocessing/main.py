@@ -8,7 +8,7 @@ from preprocessing import create_cumulativeTime_col, convert_to_timeseries, add_
 def example_main():
 
     #target variables (to change if necessary)
-    filename = "../CASAS_dataset/23_HH101/hh101.ann.features.csv"
+    filename = "../CASAS_dataset/hh111/hh111.ann.features.csv"
 
     #read the CSV file
     df = pd.read_csv(filename)
@@ -17,12 +17,12 @@ def example_main():
     df = create_cumulativeTime_col(df)
 
     #window between each reading
-    window_period = 300
+    window_period = 60
 
     ts_df = convert_to_timeseries(df, window_period, 'cumulativeTime', 'activity')
     start_date = datetime.datetime(2012,7,20,0,0,0)
     add_datetime_column(ts_df, start_date)
-    ts_df.to_csv("processed_data/hh101_preprocessed_300sw.csv")
+    ts_df.to_csv("processed_data/hh111/hh111_preprocessed_60sw.csv")
     
 if __name__ == "__main__":
     example_main()
