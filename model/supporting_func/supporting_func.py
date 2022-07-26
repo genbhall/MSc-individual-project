@@ -2,6 +2,8 @@ import pickle
 from datetime import datetime, timedelta
 from math import ceil
 import numpy as np
+from supporting_func.key_variables import all_activities
+import pandas as pd
 
 #Saves model weights and biases
 def save_model(trained_model):
@@ -47,3 +49,54 @@ def split_data(df, interval, date='Date'):
         end_interval = start_date + timedelta(days=interval)
         
     return dict_pd
+
+def print_anomalies(anomalies, filename):
+    df = pd.read_csv(filename)
+
+    anomaly_dict = {}
+
+    #for each anomaly
+    for anomaly in range(0,anomalies.shape[0]):
+        start_row = df[df['Time'] == anomalies['start'][anomaly]].index.values
+        start_row = start_row[0]
+        end_row = df[df['Time'] == anomalies['end'][anomaly]].index.values
+        end_row = end_row[0]
+        anomaly_details = {
+            'Activity': [],
+            'Start': [],
+            'Stop': [],
+            'Time_minutes': [],
+        }
+
+        current_activity = ''
+        first_tracker = 1
+        time_tracker = 0
+
+        for row in range(start_row,end_row):
+
+            #get the activity and the time
+            for activity in all_activities:
+                if ((df[activity][row] == 1) and (activity != current_activity)):
+                    anomaly_details['Activity'].append(activity)
+                    anomaly_details['Start'].append(df['Date'][row])
+                    anomaly_details['Stop'].append(df['Date'][row-1])
+                    current_activity = activity
+                    if first_tracker:
+                        anomaly_details['Stop'].pop()
+                        first_tracker -= 1
+
+            #append end time to last activity    
+            if row == end_row-1:
+                anomaly_details['Stop'].append(df['Date'][row])
+        
+        #convert anomaly_detials to pandas and append
+        anomaly_dict[anomaly] = pd.DataFrame(anomaly_details)
+        print(anomaly_dict[anomaly])
+
+    return anomaly_dict
+                    
+                    
+
+
+
+        
