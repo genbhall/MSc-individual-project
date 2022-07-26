@@ -1,14 +1,11 @@
 import pandas as pd
 import datetime
 from preprocessing import create_cumulativeTime_col, convert_to_timeseries, add_datetime_column
-
+from global_variables.global_variables import filename, data_name, start_date, interval
 
 #file processes selected csv files from HH series in CASAS to binary time series of activities 
 
 def example_main():
-
-    #target variables (to change if necessary)
-    filename = "../CASAS_dataset/hh111/hh111.ann.features.csv"
 
     #read the CSV file
     df = pd.read_csv(filename)
@@ -16,13 +13,9 @@ def example_main():
     #cumulativeTime column created from day1 000 (equivalent to first second of first day)
     df = create_cumulativeTime_col(df)
 
-    #window between each reading
-    window_period = 60
-
-    ts_df = convert_to_timeseries(df, window_period, 'cumulativeTime', 'activity')
-    start_date = datetime.datetime(2012,7,20,0,0,0)
+    ts_df = convert_to_timeseries(df, interval, 'cumulativeTime', 'activity')
     add_datetime_column(ts_df, start_date)
-    ts_df.to_csv("processed_data/hh111/hh111_preprocessed_60sw.csv")
+    ts_df.to_csv(f"processed_data/{data_name}/{data_name}_preprocessed_{interval}sw.csv")
     
 if __name__ == "__main__":
     example_main()

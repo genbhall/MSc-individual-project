@@ -1,22 +1,23 @@
 from orion import Orion
 import pandas as pd
 from output_utils.utils import plot
-from supporting_func.key_variables import all_activities
 from supporting_func.supporting_func import split_data, save_model, load_model, print_anomalies
+from global_variables.global_variables import filename, all_activities
 
 if __name__ == "__main__":
     
-    filename = "../preprocessing/processed_data/hh101/hh101_preprocessed_60sw.csv"
     df = pd.read_csv(filename)
-    dict_dfs = split_data(df,30)
 
-    training_df = dict_dfs[0][all_activities]
-    test_df = dict_dfs[1][all_activities]
+    # dict_dfs = split_data(df,30)
+    # training_df = dict_dfs[0][all_activities]
+    # test_df = dict_dfs[1][all_activities]
 
-
+    df = df[all_activities]
     orion = Orion(pipeline='config/tadgan.json')
-    # # orion.fit(training_df)
-    # # save_model(orion)
+    
+    
+    orion.fit(df)
+    save_model(orion)
 
     # orion = load_model()
     # anomalies = orion.detect(test_df)
@@ -27,10 +28,9 @@ if __name__ == "__main__":
     #     'severity': [1.44, 0.668255],
     # }
 
-
-    anomalies = pd.DataFrame(anomalies)
-    print(anomalies)
-    print_anomalies(anomalies, filename)
+    # anomalies = pd.DataFrame(anomalies)
+    # print(anomalies)
+    # print_anomalies(anomalies, filename)
     # plot(df,[anomalies])
     # print(anomalies.head(10))
 

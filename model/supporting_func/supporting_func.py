@@ -67,7 +67,6 @@ def print_anomalies(anomalies, filename):
             'Stop': [],
             'Time_minutes': [],
         }
-
         current_activity = ''
         first_tracker = 1
         time_tracker = 0
