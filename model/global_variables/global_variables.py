@@ -1,7 +1,7 @@
 from datetime import datetime
 
 # variables to do with the file looked at
-filename = "../CASAS_dataset/hh101/hh101.ann.features.csv"
+filename = "../preprocessing/processed_data/hh101/hh101_preprocessed_60sw.csv"
 data_name = 'hh101'
 interval = 60
 start_date = datetime(2012,7,20,0,0,0)

@@ -13,14 +13,14 @@ if __name__ == "__main__":
     # test_df = dict_dfs[1][all_activities]
 
     df = df[all_activities]
-    orion = Orion(pipeline='config/tadgan.json')
+    # orion = Orion(pipeline='config/tadgan.json')
     
     
-    orion.fit(df)
-    save_model(orion)
+    # orion.fit(df)
+    # save_model(orion)
 
-    # orion = load_model()
-    # anomalies = orion.detect(test_df)
+    orion = load_model()
+    anomalies = orion.detect(df)
     
     # anomalies = {
     #     'start': [3070080, 5132700],
@@ -29,8 +29,8 @@ if __name__ == "__main__":
     # }
 
     # anomalies = pd.DataFrame(anomalies)
-    # print(anomalies)
-    # print_anomalies(anomalies, filename)
+    print(anomalies)
+    print_anomalies(anomalies, filename)
     # plot(df,[anomalies])
     # print(anomalies.head(10))
 

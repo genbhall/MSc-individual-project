@@ -2,7 +2,7 @@ import pickle
 from datetime import datetime, timedelta
 from math import ceil
 import numpy as np
-from supporting_func.key_variables import all_activities
+from global_variables.global_variables import all_activities
 import pandas as pd
 
 #Saves model weights and biases
@@ -65,7 +65,6 @@ def print_anomalies(anomalies, filename):
             'Activity': [],
             'Start': [],
             'Stop': [],
-            'Time_minutes': [],
         }
         current_activity = ''
         first_tracker = 1
