@@ -1,4 +1,6 @@
-from global_variables.global_variables import filename, start_date
+from turtle import st
+from global_variables.global_variables import filename_proc, all_activities, data_name, interval
+import pandas as pd
 
 #sleeps too much - first test on one variable, then test on all
 sleep_in_anomaly = {
@@ -61,21 +63,38 @@ eating_anomaly = {
 # anomalies structured as "activity, start, end"
 def change_series(anomaly,df):
 
-    #
+    #convert to pandas
+    anomaly = pd.DataFrame(anomaly)
+    anom_length = anomaly.shape[0]
+    df_length = df.shape[0]
+    anom_tracker = 0
+    row = 0
 
-    # pull anomaly from variable - maybe as a lost, activity, start, end
-    # sleep anomaly - too long, too short, starting at the middle of the day, changing to smaller and smaller amounts
-    # toilet anomalies - too long in the toilet, too many times a day 
-    # not eating for a day
-    # not drinking for a day
-    # not taking morning meds
+    #for each row in the df
+    while row < df_length:
 
-    start_date
+        #if matches one of the changed anomalies - change the data
+        if anom_tracker < anom_length:
+            if (df['Date'][row] == anomaly['start'][anom_tracker]):
+                while (df['Date'][row] != anomaly['stop'][anom_tracker]):
+                    for activity in all_activities:
+                        if activity != 'Time':
+                            if activity != anomaly['Activity'][anom_tracker]:
+                                df.loc[row, activity] = 0
+                            else:
+                                df.loc[row, activity] = 1
+                    row += 1
+
+                #iterate to new activity change
+                anom_tracker += 1
+                row -= 1
+        row += 1
 
 def example_main():
-    df = pd.read_csv(filename)
-    df = change_series(sleep_in_anomaly, df)
-    
+    df = pd.read_csv(filename_proc)
+    change_series(sleep_in_anomaly, df)
+    print(df.loc[41511:41718, :])
+    df.to_csv(f"processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw.csv")
 
 if __name__ == "__main__":
     example_main()
