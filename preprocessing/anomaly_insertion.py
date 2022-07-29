@@ -90,6 +90,21 @@ eating_anomaly = {
         ],
 }
 
+anomalies = [
+    sleep_in_anomaly,
+    sleep_random_anomaly,
+    sleep_late_anomaly,
+    toilet_anomaly,
+    eating_anomaly,
+]
+
+def anom_summary(anomaly):
+    result = []
+    length = len(anomaly['start'])
+    result.append(anomaly['start'][0])
+    result.append(anomaly['stop'][length-1])
+    return result
+
 # takes in pandas list of anomalies - changes pandas dataframe to reflect new anomaly
 # anomalies structured as "activity, start, end"
 def insert_anomaly(anomaly,df):
@@ -123,15 +138,15 @@ def insert_anomaly(anomaly,df):
 
 def example_main():
     df = pd.read_csv(filename_proc)
-    print(df.shape[0])
-
-    insert_anomaly(sleep_in_anomaly, df)
-    insert_anomaly(sleep_random_anomaly, df)
-    insert_anomaly(sleep_late_anomaly, df)
-    insert_anomaly(toilet_anomaly, df)
-    insert_anomaly(eating_anomaly, df)
+    summary_anomalies = []
+    for anomaly in anomalies:
+        insert_anomaly(anomaly, df)
+        summary_anomaly = anom_summary(anomaly)
+        summary_anomalies.append(summary_anomaly)
+    df_sum = pd.DataFrame(summary_anomalies, columns= ['start', 'stop'])
 
     df.to_csv(f"processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw.csv")
+    df_sum.to_csv(f"processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw_summary.csv")
 
 if __name__ == "__main__":
     example_main()
