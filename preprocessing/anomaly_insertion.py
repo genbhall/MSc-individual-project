@@ -1,8 +1,7 @@
-from turtle import st
 from global_variables.global_variables import filename_proc, all_activities, data_name, interval
 import pandas as pd
 
-#sleeps too much - first test on one variable, then test on all
+#sleeps +3 hours longer
 sleep_in_anomaly = {
     'start': [
         '2012-08-18 06:32:00',
@@ -30,38 +29,70 @@ sleep_in_anomaly = {
         ],
 }
 
-#sleeps at weird time
-sleep_random_anomaly = {
-    'start': ['2012-08-18 06:32:00'],
-    'stop': ['2012-08-18 09:32:00'],
-    'Activity': ['Sleep'],
-}
-
 #does not sleep day
-no_sleep_anomaly = {
-    'start': ['2012-08-18 06:32:00'],
-    'stop': [],
+sleep_random_anomaly = {
+    'start': ['2012-08-26 12:17:00'],
+    'stop': ['2012-08-26 16:41:00'],
     'Activity': ['Sleep'],
 }
 
-#uses toilet < per day
+#sleeps 3 hours later
+sleep_late_anomaly = {
+    'start': [
+        '2012-09-11 00:57:00'
+        ],
+    'stop': [
+        '2012-09-11 03:57:00'
+        ],
+    'Activity': [
+        'Watch_TV'
+        ],
+}
+
+#uses toilet per day +4 times in the morning - CONTEXTUAL
 toilet_anomaly = {
-    'start': [],
-    'stop': [],
-    'Activity': ['Toilet'],
+    'start': [
+        '2012-09-05 08:09:00', 
+        '2012-09-05 09:06:00',
+        '2012-09-05 09:51:00',
+        '2012-09-05 10:33:00',
+        ],
+    'stop': [
+        '2012-09-05 08:12:00', 
+        '2012-09-05 09:08:00',
+        '2012-09-05 09:54:00',
+        '2012-09-05 10:37:00', 
+        ],
+    'Activity': [
+        'Toilet', 
+        'Toilet', 
+        'Toilet', 
+        'Toilet'
+        ],
 }
 
 #does not eat for a day
 eating_anomaly = {
-    'start': [],
-    'stop': [],
-    'Activity': ['Dinner'],
+    'start': [
+        '2012-08-31 07:49:00', 
+        '2012-08-31 14:48:00', 
+        '2012-08-31 19:56:00'
+        ],
+    'stop': [
+        '2012-08-31 08:17:00',
+        '2012-08-31 15:01:00', 
+        '2012-08-31 20:24:00'
+        ],
+    'Activity': [
+        'Read', 
+        'Other_Activity', 
+        'Watch_TV'
+        ],
 }
-
 
 # takes in pandas list of anomalies - changes pandas dataframe to reflect new anomaly
 # anomalies structured as "activity, start, end"
-def change_series(anomaly,df):
+def insert_anomaly(anomaly,df):
 
     #convert to pandas
     anomaly = pd.DataFrame(anomaly)
@@ -92,8 +123,14 @@ def change_series(anomaly,df):
 
 def example_main():
     df = pd.read_csv(filename_proc)
-    change_series(sleep_in_anomaly, df)
-    print(df.loc[41511:41718, :])
+    print(df.shape[0])
+
+    insert_anomaly(sleep_in_anomaly, df)
+    insert_anomaly(sleep_random_anomaly, df)
+    insert_anomaly(sleep_late_anomaly, df)
+    insert_anomaly(toilet_anomaly, df)
+    insert_anomaly(eating_anomaly, df)
+
     df.to_csv(f"processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw.csv")
 
 if __name__ == "__main__":
