@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from global_variables.global_variables import filename_proc
 
 
 #plots timeseries of indidual activities (binary signal) 
@@ -16,12 +17,6 @@ def plot_single_variable(df, time_t, variable):
     plt.show()
 
 if __name__ == "__main__":
-
-    #target variables (to change if necessary)
-    filename = "processed_data/hh101_preprocessed_60sw.csv"
-
-    #read the CSV file
-    df = pd.read_csv(filename)
+    df = pd.read_csv(filename_proc)
     print(df.columns)
-
     plot_single_variable(df, 'timestamp', 'Sleep')
