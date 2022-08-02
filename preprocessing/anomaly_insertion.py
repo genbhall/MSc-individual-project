@@ -11,7 +11,7 @@ sleep_in_anomaly = {
         '2012-08-18 09:42:00',
         '2012-08-18 09:45:00',
         ],
-    'stop': [
+    'end': [
         '2012-08-18 09:32:00',
         '2012-08-18 09:34:00',
         '2012-08-18 09:38:00',
@@ -32,7 +32,7 @@ sleep_in_anomaly = {
 #does not sleep day
 sleep_random_anomaly = {
     'start': ['2012-08-26 12:17:00'],
-    'stop': ['2012-08-26 16:41:00'],
+    'end': ['2012-08-26 16:41:00'],
     'Activity': ['Sleep'],
 }
 
@@ -41,7 +41,7 @@ sleep_late_anomaly = {
     'start': [
         '2012-09-11 00:57:00'
         ],
-    'stop': [
+    'end': [
         '2012-09-11 03:57:00'
         ],
     'Activity': [
@@ -57,7 +57,7 @@ toilet_anomaly = {
         '2012-09-05 09:51:00',
         '2012-09-05 10:33:00',
         ],
-    'stop': [
+    'end': [
         '2012-09-05 08:12:00', 
         '2012-09-05 09:08:00',
         '2012-09-05 09:54:00',
@@ -78,7 +78,7 @@ eating_anomaly = {
         '2012-08-31 14:48:00', 
         '2012-08-31 19:56:00'
         ],
-    'stop': [
+    'end': [
         '2012-08-31 08:17:00',
         '2012-08-31 15:01:00', 
         '2012-08-31 20:24:00'
@@ -102,7 +102,7 @@ def anom_summary(anomaly):
     result = []
     length = len(anomaly['start'])
     result.append(anomaly['start'][0])
-    result.append(anomaly['stop'][length-1])
+    result.append(anomaly['end'][length-1])
     return result
 
 # takes in pandas list of anomalies - changes pandas dataframe to reflect new anomaly
@@ -122,9 +122,9 @@ def insert_anomaly(anomaly,df):
         #if matches one of the changed anomalies - change the data
         if anom_tracker < anom_length:
             if (df['Date'][row] == anomaly['start'][anom_tracker]):
-                while (df['Date'][row] != anomaly['stop'][anom_tracker]):
+                while (df['Date'][row] != anomaly['end'][anom_tracker]):
                     for activity in all_activities:
-                        if activity != 'Time':
+                        if activity != 'timestamp':
                             if activity != anomaly['Activity'][anom_tracker]:
                                 df.loc[row, activity] = 0
                             else:
@@ -143,7 +143,7 @@ def example_main():
         insert_anomaly(anomaly, df)
         summary_anomaly = anom_summary(anomaly)
         summary_anomalies.append(summary_anomaly)
-    df_sum = pd.DataFrame(summary_anomalies, columns= ['start', 'stop'])
+    df_sum = pd.DataFrame(summary_anomalies, columns= ['start', 'end'])
 
     df.to_csv(f"processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw.csv")
     df_sum.to_csv(f"processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw_summary.csv")

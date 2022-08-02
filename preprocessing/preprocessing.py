@@ -29,7 +29,7 @@ def convert_to_timeseries(df, interval, col_time, col_activity):
 
     # create new timeseries dataframe with activities as input
     activity_array = df[col_activity].unique()
-    activity_array = np.insert(activity_array,0,'Time')
+    activity_array = np.insert(activity_array,0,'timestamp')
     ts_df = pd.DataFrame(columns=activity_array)
 
     row_tracker = 0
@@ -39,7 +39,7 @@ def convert_to_timeseries(df, interval, col_time, col_activity):
 
         # create new rows in dataframe - all 0s, set time to timestamp
         ts_df = ts_df.append(pd.Series(0, index=ts_df.columns), ignore_index=True)
-        ts_df['Time'][df_tracker] = time_t
+        ts_df['timestamp'][df_tracker] = time_t
         
         #next lines is to find the dominant activity in the time slot and add it to the tracker
         activities_dict = {}
@@ -85,7 +85,7 @@ def convert_to_timeseries(df, interval, col_time, col_activity):
 
 def add_datetime_column(df, start_date):
 
-    df['Date'] = df['Time'].apply(lambda date: start_date + datetime.timedelta(seconds = date))
+    df['Date'] = df['timestamp'].apply(lambda date: start_date + datetime.timedelta(seconds = date))
     col_to_move = df.pop('Date')
     df.insert(1,"Date",col_to_move)
     return df

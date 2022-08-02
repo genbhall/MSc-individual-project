@@ -7,7 +7,7 @@ data_name = 'hh101'
 interval = 60
 start_date = datetime(2012,7,20,0,0,0)
 all_activities = [
-    'Time', 
+    'timestamp', 
     'Step_Out', 
     'Other_Activity',
     'Toilet', 

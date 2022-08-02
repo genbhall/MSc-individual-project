@@ -1,13 +1,14 @@
 from datetime import datetime
 
 # variables to do with the file looked at
-filename_train = "../preprocessing/processed_data/hh101/hh101_preprocessed_60sw.csv"
-filename_test = "../preprocessing/processed_data/anomalous/hh101/hh101_anomalous_60sw.csv"
 data_name = 'hh101'
 interval = 60
 start_date = datetime(2012,7,20,0,0,0)
+filename_train = (f"../preprocessing/processed_data/{data_name}/{data_name}_preprocessed_{interval}sw.csv")
+filename_test = (f"../preprocessing/processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw.csv")
+filename_summary = (f"../preprocessing/processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw_summary.csv")
 all_activities = [
-    'Time', 
+    'timestamp', 
     # 'Step_Out', 
     # 'Other_Activity',
     # 'Toilet', 

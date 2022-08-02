@@ -11,7 +11,7 @@ def plot_single_variable(df, time_t, variable):
 
     plt.plot(time_t, activity)
     plt.title('Time Series of {activity}')
-    plt.xlabel('Time')
+    plt.xlabel('timestamp')
     plt.ylabel('{Activity}')
     plt.show()
 
@@ -24,4 +24,4 @@ if __name__ == "__main__":
     df = pd.read_csv(filename)
     print(df.columns)
 
-    plot_single_variable(df, 'Time', 'Sleep')
+    plot_single_variable(df, 'timestamp', 'Sleep')

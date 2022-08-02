@@ -2,7 +2,7 @@ import pickle
 from datetime import datetime, timedelta
 from math import ceil
 import numpy as np
-from global_variables.global_variables import all_activities
+from global_variables.global_variables import all_activities, start_date
 import pandas as pd
 
 #Saves model weights and biases - name excludes folder
@@ -60,9 +60,9 @@ def print_anomalies(anomalies, filename):
 
     #for each anomaly
     for anomaly in range(0,anomalies.shape[0]):
-        start_row = df[df['Time'] == anomalies['start'][anomaly]].index.values
+        start_row = df[df['timestamp'] == anomalies['start'][anomaly]].index.values
         start_row = start_row[0]
-        end_row = df[df['Time'] == anomalies['end'][anomaly]].index.values
+        end_row = df[df['timestamp'] == anomalies['end'][anomaly]].index.values
         end_row = end_row[0]
         anomaly_details = {
             'Activity': [],
@@ -95,3 +95,13 @@ def print_anomalies(anomalies, filename):
         print(anomaly_dict[anomaly])
 
     return anomaly_dict
+
+def convert_datetotime(date):
+    date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+    time = int((date - start_date).total_seconds())
+    return time
+
+def convert_dfdatetotime(df):
+    df['start'] = df['start'].apply(lambda x: convert_datetotime(x))
+    df['end'] = df['end'].apply(lambda x: convert_datetotime(x))
+    return df

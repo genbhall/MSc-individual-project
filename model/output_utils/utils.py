@@ -51,7 +51,7 @@ def plot_ts(X, labels=None):
     
     plt.title('NYC Taxi Demand', size=34)
     plt.ylabel('# passengers', size=30)
-    plt.xlabel('Time', size=30)
+    plt.xlabel('timestamp', size=30)
     plt.xticks(size=26)
     plt.yticks(size=26)
     plt.xlim([t[0], t[-1]])
@@ -106,7 +106,7 @@ def plot(dfs, anomalies=[]):
         anomalies = [anomalies]
         
     df = dfs[0]
-    time = convert_date(df['Time'])
+    time = convert_date(df['timestamp'])
     months = mdates.MonthLocator()  # every month
     days = mdates.DayLocator() # every day
 
@@ -130,7 +130,7 @@ def plot(dfs, anomalies=[]):
 
     plt.title('NYC Taxi Demand', size=34)
     plt.ylabel('# passengers', size=30)
-    plt.xlabel('Time', size=30)
+    plt.xlabel('timestamp', size=30)
     plt.xticks(size=26)
     plt.yticks(size=26)
     plt.xlim([time[0], time[-1]])
