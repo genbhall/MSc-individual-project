@@ -1,8 +1,21 @@
 from global_variables.global_variables import filename_proc, all_activities, data_name, interval
 import pandas as pd
 
+#sleeps +5 hours longer
+sleep_in_anomaly_singlevar = {
+    'start': [
+        '2012-08-18 06:32:00',
+        ],
+    'end': [
+        '2012-08-18 11:32:00',
+        ],
+    'Activity': [
+        'Sleep',
+        ],
+}
+
 #sleeps +3 hours longer
-sleep_in_anomaly = {
+sleep_in_anomaly_multivar = {
     'start': [
         '2012-08-18 06:32:00',
         '2012-08-18 09:32:00',
@@ -43,6 +56,19 @@ sleep_late_anomaly = {
         ],
     'end': [
         '2012-09-11 03:57:00'
+        ],
+    'Activity': [
+        'Watch_TV'
+        ],
+}
+
+#no sleep
+no_sleep_anomaly = {
+    'start': [
+        '2012-09-01 00:27:00'
+        ],
+    'end': [
+        '2012-09-01 10:13:00'
         ],
     'Activity': [
         'Watch_TV'
@@ -90,12 +116,14 @@ eating_anomaly = {
         ],
 }
 
+#just for sleep
 anomalies = [
-    sleep_in_anomaly,
+    sleep_in_anomaly_singlevar,
     sleep_random_anomaly,
     sleep_late_anomaly,
-    toilet_anomaly,
-    eating_anomaly,
+    no_sleep_anomaly,
+    # toilet_anomaly,
+    # eating_anomaly,
 ]
 
 def anom_summary(anomaly):

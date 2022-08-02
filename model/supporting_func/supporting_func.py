@@ -105,3 +105,12 @@ def convert_dfdatetotime(df):
     df['start'] = df['start'].apply(lambda x: convert_datetotime(x))
     df['end'] = df['end'].apply(lambda x: convert_datetotime(x))
     return df
+
+def convert_timetodate(time):
+    date = start_date + timedelta(seconds=time)
+    return date
+
+def convert_dftimetodate(df):
+    df['start'] = df['start'].apply(lambda x: convert_timetodate(x))
+    df['end'] = df['end'].apply(lambda x: convert_timetodate(x))
+    return df

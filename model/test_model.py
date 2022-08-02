@@ -2,7 +2,7 @@ from orion import Orion
 from orion.evaluation.contextual import contextual_accuracy, contextual_f1_score, contextual_precision
 import pandas as pd
 from output_utils.utils import plot
-from supporting_func.supporting_func import split_data, save_model, load_model, print_anomalies, convert_dfdatetotime
+from supporting_func.supporting_func import split_data, save_model, load_model, print_anomalies, convert_dfdatetotime, convert_dftimetodate
 from global_variables.global_variables import filename_train, all_activities, filename_test, filename_summary
 
 if __name__ == "__main__":
@@ -15,11 +15,21 @@ if __name__ == "__main__":
 
     # df = pd.read_csv(filename_train)
     # df = df[all_activities]
-    # orion = Orion(pipeline='config/tadgan.json')
+    # parameters = {
+    #     "mlprimitives.custom.timeseries_preprocessing.time_segments_aggregate#1": {
+    #         "interval": 300 # 5min
+    #     },
+    #     'orion.primitives.tadgan.TadGAN#1': {
+    #         'epochs': 10,
+    #         'latent_dim': 10,
+    #         'dense_units': 10,
+    #     }
+    # }
+    # orion = Orion(pipeline='config/tadgan.json', hyperparameters=parameters)
     # orion.fit(df)
     # save_model(orion, pickle_file)
 
-    #load and read files - detect anomalies
+    # load and read files - detect anomalies
     df = pd.read_csv(filename_test)
     df = df[all_activities]
     orion = load_model(pickle_file)
@@ -27,6 +37,7 @@ if __name__ == "__main__":
 
     #evaluate the anomalies 
     ground_truth = pd.read_csv(filename_summary)
+    print(ground_truth)
     ground_truth = convert_dfdatetotime(ground_truth)
     metrics = [
         'f1',
@@ -36,10 +47,11 @@ if __name__ == "__main__":
     scores = orion.evaluate(df, ground_truth, fit=False, metrics=metrics)
     print(scores)
 
-    # print(anomalies)
-    # print_anomalies(anomalies, filename_test)
-    # plot(df,[anomalies])
-    # print(anomalies.head(10))
+    # anomalies = convert_dftimetodate(anomalies)
+    print(anomalies)
+    print_anomalies(anomalies, filename_test)
+    plot(df,[anomalies])
+    print(anomalies.head(10))
 
 '''
 from supporting_func.supporting_func import save_model, load_model
