@@ -5,17 +5,19 @@ import numpy as np
 from global_variables.global_variables import all_activities
 import pandas as pd
 
-#Saves model weights and biases
-def save_model(trained_model):
-    with open('trained_model.pickle', 'wb') as target:
+#Saves model weights and biases - name excludes folder
+def save_model(trained_model, name):
+    picklefile = f"saved_models/{name}"
+    with open(picklefile, 'wb') as target:
         pickle.dump(trained_model, target)
-    print("\nSaved model in trained_model.pickle\n")
+    print(f"\nSaved model in {picklefile}\n")
 
-#loads the appropriate pickle file
-def load_model():
-    with open('trained_model.pickle', 'rb') as target:
+#loads the appropriate pickle file - name excludes folder
+def load_model(name):
+    picklefile = f"saved_models/{name}"
+    with open(picklefile, 'rb') as target:
         trained_model = pickle.load(target)
-    print("\nLoaded model in trained_model.pickle\n")
+    print(f"\nLoaded model in {picklefile}\n")
     return trained_model
 
 #split data into groups of times based on days interval. 
@@ -50,6 +52,7 @@ def split_data(df, interval, date='Date'):
         
     return dict_pd
 
+#takes anomalies dataFrame and breaks out all interactions within labeled anomaly
 def print_anomalies(anomalies, filename):
     df = pd.read_csv(filename)
 
@@ -92,9 +95,3 @@ def print_anomalies(anomalies, filename):
         print(anomaly_dict[anomaly])
 
     return anomaly_dict
-                    
-                    
-
-
-
-        

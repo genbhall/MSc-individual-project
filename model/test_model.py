@@ -2,35 +2,30 @@ from orion import Orion
 import pandas as pd
 from output_utils.utils import plot
 from supporting_func.supporting_func import split_data, save_model, load_model, print_anomalies
-from global_variables.global_variables import filename, all_activities
+from global_variables.global_variables import filename_train, all_activities, filename_test
 
 if __name__ == "__main__":
     
-    df = pd.read_csv(filename)
+    pickle_file = "sleep_model.pickle"
+
 
     # dict_dfs = split_data(df,30)
     # training_df = dict_dfs[0][all_activities]
     # test_df = dict_dfs[1][all_activities]
 
-    df = df[all_activities]
+    # df = pd.read_csv(filename_train)
+    # df = df[all_activities]
     # orion = Orion(pipeline='config/tadgan.json')
-    
-    
     # orion.fit(df)
-    # save_model(orion)
+    # save_model(orion, pickle_file)
 
-    orion = load_model()
+    df = pd.read_csv(filename_test)
+    df = df[all_activities]
+    orion = load_model(pickle_file)
     anomalies = orion.detect(df)
-    
-    # anomalies = {
-    #     'start': [3070080, 5132700],
-    #     'end': [3095340, 5153880],
-    #     'severity': [1.44, 0.668255],
-    # }
-
-    # anomalies = pd.DataFrame(anomalies)
+    anomalies = pd.DataFrame(anomalies)
     print(anomalies)
-    print_anomalies(anomalies, filename)
+    print_anomalies(anomalies, filename_test)
     # plot(df,[anomalies])
     # print(anomalies.head(10))
 

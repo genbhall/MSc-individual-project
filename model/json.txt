@@ -1,5 +1,0 @@
-Interval - equally spaced intervals (can skip if already processed)
-Method - type of aggregation method to use mean, mode or median
-Data imputation - using simple scikit imputer
-Data normalisation - normalise data into range of [-1,1] using minmaxscalar
-Data slicing - divides original time series into signal segments

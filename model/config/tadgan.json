@@ -32,7 +32,7 @@
         },
         "orion.primitives.tadgan.TadGAN#1": {
             "epochs": 10,
-            "input_shape":[100, 35],
+            "input_shape":[100, 1],
             "target_shape": [100, 1]
         },
         "orion.primitives.tadgan.score_anomalies#1": {
