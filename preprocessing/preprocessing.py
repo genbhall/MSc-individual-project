@@ -36,7 +36,7 @@ def convert_to_timeseries(df, interval, col_time, col_activity):
     row_tracker = 0
     df_tracker = 0
     SECONDS_IN_DAY = 3600 * 24
-    SECONDS_IN_HOUR = 60
+    SECONDS_IN_HOUR = 3600
 
     for time_t in range(min_time, max_time, interval):
 
@@ -44,7 +44,6 @@ def convert_to_timeseries(df, interval, col_time, col_activity):
         ts_df = ts_df.append(pd.Series(0, index=ts_df.columns), ignore_index=True)
         ts_df['timestamp'][df_tracker] = time_t
         ts_df['hour_day'][df_tracker] = int((time_t % SECONDS_IN_DAY) / SECONDS_IN_HOUR)
-        print(ts_df['hour_day'][df_tracker])
 
         #next lines is to find the dominant activity in the time slot and add it to the tracker
         activities_dict = {}
