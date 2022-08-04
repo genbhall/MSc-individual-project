@@ -9,10 +9,10 @@ if __name__ == "__main__":
     
     pickle_file = "sleep_model.pickle"
 
-    df = pd.read_csv(filename_train)
-    dict_dfs = split_data(df,30)
-    training_df = dict_dfs[0][all_activities]
-    test_df = dict_dfs[1][all_activities]
+    # df = pd.read_csv(filename_train)
+    # dict_dfs = split_data(df,30)
+    # training_df = dict_dfs[0][all_activities]
+    # test_df = dict_dfs[1][all_activities]
 
     test_df = test_df[all_activities]
     parameters = {
@@ -20,7 +20,7 @@ if __name__ == "__main__":
             "interval": 300 # 5min
         },
         'orion.primitives.tadgan.TadGAN#1': {
-            'epochs': 20,
+            'epochs': 30,
             'latent_dim': 50,
             'dense_units': 50,
         }
@@ -29,13 +29,14 @@ if __name__ == "__main__":
     orion.fit(test_df)
     save_model(orion, pickle_file)
 
-    # # load and read files - detect anomalies
+    # load and read files - detect anomalies
     # df = pd.read_csv(filename_test)
     # df = df[all_activities]
     # orion = load_model(pickle_file)
-    # prediction = orion.predict(test_df)
+    # prediction = orion._mlpipeline.predict(df)
     # print(prediction)
-    # # anomalies, visualise = orion.detect(df, visualization=True)
+
+    # anomalies, visualise = orion.detect(df, visualization=True)
     # print(anomalies)
     # print(visualise)
 
