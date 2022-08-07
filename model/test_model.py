@@ -9,36 +9,34 @@ if __name__ == "__main__":
     
     pickle_file = "sleep_model.pickle"
 
-    # df = pd.read_csv(filename_train)
-    # dict_dfs = split_data(df,30)
+    df = pd.read_csv(filename_train)
+    df = df[all_activities]
+
+    # dict_dfs = split_data(df,28)
     # training_df = dict_dfs[0][all_activities]
     # test_df = dict_dfs[1][all_activities]
 
-    test_df = test_df[all_activities]
     parameters = {
         "mlprimitives.custom.timeseries_preprocessing.time_segments_aggregate#1": {
-            "interval": 300 # 5min
+            "interval": 600 # 5min
         },
         'orion.primitives.tadgan.TadGAN#1': {
-            'epochs': 30,
-            'latent_dim': 50,
-            'dense_units': 50,
+            'epochs':10,
+            'latent_dim': 20,
+            'dense_units': 20,
         }
     }
     orion = Orion(pipeline='config/tadgan.json', hyperparameters=parameters)
-    orion.fit(test_df)
+    orion.fit(df)
     save_model(orion, pickle_file)
 
-    # load and read files - detect anomalies
+    # # load and read files - detect anomalies
     # df = pd.read_csv(filename_test)
     # df = df[all_activities]
-    # orion = load_model(pickle_file)
-    # prediction = orion._mlpipeline.predict(df)
-    # print(prediction)
+    # # orion = load_model(pickle_file)
 
-    # anomalies, visualise = orion.detect(df, visualization=True)
+    # anomalies= orion.detect(df, visualization=False)
     # print(anomalies)
-    # print(visualise)
 
     # # evaluate the anomalies 
     # ground_truth = pd.read_csv(filename_summary)

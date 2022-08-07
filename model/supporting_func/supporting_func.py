@@ -114,3 +114,67 @@ def convert_dftimetodate(df):
     df['start'] = df['start'].apply(lambda x: convert_timetodate(x))
     df['end'] = df['end'].apply(lambda x: convert_timetodate(x))
     return df
+
+def time_segments_aggregate(X, interval, time_column, method=['mean']):
+
+    #sorting the values on timestamp column and setting it as a index
+    X = X.sort_values(time_column).set_index(time_column)
+
+    if isinstance(method, str):
+        method = [method]
+
+    start_ts = X.index.values[0]
+    max_ts = X.index.values[-1]
+
+    values = list()
+    index = list()
+    while start_ts <= max_ts:
+        end_ts = start_ts + interval
+        subset = X.loc[start_ts:end_ts - 1]
+        aggregated = [
+            getattr(subset, agg)(skipna=True).values
+            for agg in method
+        ]
+        values.append(np.concatenate(aggregated))
+        index.append(start_ts)
+        start_ts = end_ts
+
+    return np.asarray(values), np.asarray(index)
+
+def rolling_window_sequences(X, index, window_size, target_size, step_size, target_column,
+                             drop=None, drop_windows=False):
+    out_X = list()
+    out_y = list()
+    X_index = list()
+    y_index = list()
+    target = X[:, target_column]
+
+    if drop_windows:
+        if hasattr(drop, '__len__') and (not isinstance(drop, str)):
+            if len(drop) != len(X):
+                raise Exception('Arrays `drop` and `X` must be of the same length.')
+        else:
+            if isinstance(drop, float) and np.isnan(drop):
+                drop = np.isnan(X)
+            else:
+                drop = X == drop
+
+    start = 0
+    max_start = len(X) - window_size - target_size + 1
+    while start < max_start:
+        end = start + window_size
+
+        if drop_windows:
+            drop_window = drop[start:end + target_size]
+            to_drop = np.where(drop_window)[0]
+            if to_drop.size:
+                start += to_drop[-1] + 1
+                continue
+
+        out_X.append(X[start:end])
+        out_y.append(target[end:end + target_size])
+        X_index.append(index[start])
+        y_index.append(index[end])
+        start = start + step_size
+
+    return np.asarray(out_X), np.asarray(out_y), np.asarray(X_index), np.asarray(y_index)
