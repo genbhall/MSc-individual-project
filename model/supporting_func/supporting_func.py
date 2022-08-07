@@ -121,7 +121,8 @@ def convert_dftimetodate(df):
 
 # --------------------------------Taken and adapted from Orion-ml---------------------------------------------------
 
-def time_segments_aggregate(df, interval, time_column, method=['median']):
+#Function returns df into numpy split of values and index at interval time slots 
+def time_segments_aggregate(df, interval, time_column, method=['mean']):
 
     #sorting the values on timestamp column and setting it as a index
     df = df.set_index(time_column)
@@ -138,6 +139,8 @@ def time_segments_aggregate(df, interval, time_column, method=['median']):
     while start_ts <= max_ts:
         end_ts = start_ts + interval
         subset = df.loc[start_ts:end_ts - 1]
+        
+        #this gets the mean value per category and sets that as the value for set time
         aggregated = [
             getattr(subset, agg)(skipna=True).values
             for agg in method
@@ -148,37 +151,23 @@ def time_segments_aggregate(df, interval, time_column, method=['median']):
 
     return np.asarray(values), np.asarray(index)
 
-def rolling_window_sequences(X, index, window_size, target_size, step_size, target_column,
-                             drop=None, drop_windows=False):
+#converts aggregate values/index into array of windows of window size
+def rolling_window_sequences(x_values, index, window_size, target_size, step_size, 
+                             target_column):
+    
     out_X = list()
     out_y = list()
     X_index = list()
     y_index = list()
-    target = X[:, target_column]
-
-    if drop_windows:
-        if hasattr(drop, '__len__') and (not isinstance(drop, str)):
-            if len(drop) != len(X):
-                raise Exception('Arrays `drop` and `X` must be of the same length.')
-        else:
-            if isinstance(drop, float) and np.isnan(drop):
-                drop = np.isnan(X)
-            else:
-                drop = X == drop
+    target = x_values[:, target_column]
 
     start = 0
-    max_start = len(X) - window_size - target_size + 1
+    
+    #create the respective lists for output
+    max_start = len(x_values) - window_size - target_size + 1
     while start < max_start:
         end = start + window_size
-
-        if drop_windows:
-            drop_window = drop[start:end + target_size]
-            to_drop = np.where(drop_window)[0]
-            if to_drop.size:
-                start += to_drop[-1] + 1
-                continue
-
-        out_X.append(X[start:end])
+        out_X.append(x_values[start:end])
         out_y.append(target[end:end + target_size])
         X_index.append(index[start])
         y_index.append(index[end])
