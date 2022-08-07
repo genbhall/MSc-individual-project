@@ -2,8 +2,8 @@ import pickle
 from datetime import datetime, timedelta
 from math import ceil
 import numpy as np
-from global_variables.global_variables import all_activities, start_date
 import pandas as pd
+from global_variables.global_variables import all_activities, start_date
 
 #Saves model weights and biases - name excludes folder
 def save_model(trained_model, name):
@@ -96,6 +96,9 @@ def print_anomalies(anomalies, filename):
 
     return anomaly_dict
 
+
+# --------------------------------Anomaly Time<->date Conversion Formulae------------------------------------------ 
+
 def convert_datetotime(date):
     date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
     time = int((date - start_date).total_seconds())
@@ -115,22 +118,26 @@ def convert_dftimetodate(df):
     df['end'] = df['end'].apply(lambda x: convert_timetodate(x))
     return df
 
-def time_segments_aggregate(X, interval, time_column, method=['mean']):
+
+# --------------------------------Taken and adapted from Orion-ml---------------------------------------------------
+
+def time_segments_aggregate(df, interval, time_column, method=['median']):
 
     #sorting the values on timestamp column and setting it as a index
-    X = X.sort_values(time_column).set_index(time_column)
+    df = df.set_index(time_column)
 
+    #corrects method argument if it is a string (puts it into a list of strings)
     if isinstance(method, str):
         method = [method]
 
-    start_ts = X.index.values[0]
-    max_ts = X.index.values[-1]
+    start_ts = df.index.values[0]
+    max_ts = df.index.values[-1]
 
     values = list()
     index = list()
     while start_ts <= max_ts:
         end_ts = start_ts + interval
-        subset = X.loc[start_ts:end_ts - 1]
+        subset = df.loc[start_ts:end_ts - 1]
         aggregated = [
             getattr(subset, agg)(skipna=True).values
             for agg in method
