@@ -205,15 +205,17 @@ def anomalies_calc(threshold, error_array, index):
     intervals = list()
     i = 0
     max_start = len(error_array)
+    
+    #for each timeslot, if error is above threshold, add it to the intervals list
     while i < max_start:
         j = i
         start = index[i]
-        while error_array[i] > threshold:
+        while (i < max_start) and (error_array[i] > threshold):
             i += 1
         
         end = index[i]
         if start != end:
-            intervals.append((start, end, np.mean(error_array[j: i+1])))
-            
+            intervals.append((start, end, np.mean(error_array[j: i+1])))          
         i += 1
-        return intervals
+    
+    return intervals

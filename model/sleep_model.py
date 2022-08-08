@@ -18,9 +18,6 @@ if __name__ == "__main__":
     df = pd.read_csv(filename_test)
     df = df[all_activities]
     
-    
-    
-    window_sz = 200
     #here df is the given dataframe and "timestamp" is the required column to be altered.
     x_values, index = time_segments_aggregate(df, 
                                               interval=300, 
@@ -32,6 +29,7 @@ if __name__ == "__main__":
     
     #the target value; the value at time t.
     #previous observed values, this is determined by the window width.
+    window_sz = 200
     x_values, y, values_index, y_index = rolling_window_sequences(x_values, index, 
                                                     window_size=window_sz, 
                                                     target_size=1, 
