@@ -122,7 +122,7 @@ def convert_dftimetodate(df):
 # --------------------------------Taken and adapted from Orion-ml---------------------------------------------------
 
 #Function returns df into numpy split of values and index at interval time slots 
-def time_segments_aggregate(df, interval, time_column, method=['mean']):
+def time_segments_aggregate(df, interval, time_column='timestamp', method=['mean']):
 
     #sorting the values on timestamp column and setting it as a index
     df = df.set_index(time_column)
