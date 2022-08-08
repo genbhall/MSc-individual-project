@@ -1,6 +1,6 @@
 # from orion.evaluation.contextual import contextual_accuracy, contextual_f1_score, contextual_precision
 from optparse import Values
-from supporting_func.supporting_func import time_segments_aggregate, rolling_window_sequences, convert_dfdatetotime
+from supporting_func.supporting_func import time_segments_aggregate, rolling_window_sequences, save_model, load_model, collapse_ts, anomalies_calc
 from global_variables.global_variables import filename_train, all_activities, filename_test, filename_summary
 
 import numpy as np
@@ -17,8 +17,10 @@ if __name__ == "__main__":
     #read the file
     df = pd.read_csv(filename_test)
     df = df[all_activities]
-    window_sz = 200
     
+    
+    
+    window_sz = 200
     #here df is the given dataframe and "timestamp" is the required column to be altered.
     x_values, index = time_segments_aggregate(df, 
                                               interval=300, 
@@ -47,36 +49,35 @@ if __name__ == "__main__":
     # hyperparameters["layers_generator"][1]["parameters"]["units"] = int(window_sz/2)
 
     # tgan = TadGAN(**hyperparameters)
-    # tgan.fit(X)
+    # tgan.fit(x_values)
     
-    #notes - caught on the generator. Builds all the layers, then target shape is 500
-    #error is happening in the construction of the sequential_2 layer target_shape 2 build
+    # save_model(tgan, "sleep_tgan.pickle")
     
-    # X_hat, critic = tgan.predict(X)
-    # # flatten the predicted windows 
+    tgan = load_model("sleep_tgan.pickle")    
     
-    # error, true_index, true, pred = score_anomalies(X, X_hat, critic, X_index, rec_error_type="dtw", comb="mult")
-    # pred = np.array(pred).mean(axis=2)
+    #this reconstructs the values and gives the critic score for each input sequence
+    x_values_hat, critic = tgan.predict(x_values)
+  
+    #not needed for .py run but helpful in understanding how this works
+    y_hat = collapse_ts(x_values_hat)
+    
+    #anomaly scoring - score window - Size of the window over which the scores are calculated
+    error, true_index, true, pred = score_anomalies(x_values, 
+                                                    x_values_hat, 
+                                                    critic, 
+                                                    values_index,
+                                                    score_window=10,
+                                                    rec_error_type="dtw", 
+                                                    comb="mult")
+    
+    pred = np.array(pred).mean(axis=2)
 
     # # threshold to classify the high peak data points as anomolous points
-    # thresh = 8
-    # intervals = list()
-    # i = 0
-    # max_start = len(error)
-    # while i < max_start:
-    #     j = i
-    #     start = index[i]
-    #     while error[i] > thresh:
-    #         i += 1
-        
-    #     end = index[i]
-    #     if start != end:
-    #         intervals.append((start, end, np.mean(error[j: i+1])))
+    threshold = 5
+    intervals = anomalies_calc(threshold, error, index)
+    anomalies = pd.DataFrame(intervals, columns=['start', 'end', 'score'])
+    print(anomalies)
             
-    #     i += 1
-            
-    # anomalies = pd.DataFrame(intervals, columns=['start', 'end', 'score'])
-    # print(anomalies)
     # ground_truth = pd.read_csv(filename_summary)
     # print(ground_truth)
     # ground_truth = convert_dfdatetotime(ground_truth)

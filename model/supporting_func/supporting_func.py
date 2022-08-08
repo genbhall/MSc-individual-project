@@ -174,3 +174,46 @@ def rolling_window_sequences(x_values, index, window_size, target_size, step_siz
         start = start + step_size
 
     return np.asarray(out_X), np.asarray(out_y), np.asarray(X_index), np.asarray(y_index)
+
+#collapses each window input sequence into output array (using median at each time point)
+def collapse_ts(x_values_hat):
+    predictions = list()
+    
+    #length of each input sequence
+    pred_length = x_values_hat.shape[1]
+    
+    #length of entire dataset
+    num_errors = x_values_hat.shape[1] + (x_values_hat.shape[0] - 1)
+
+    #for each value in the length of dataset - take the median
+    for i in range(num_errors):
+            intermediate = []
+
+            #for every relevant prediction in input, append it to the intermediate
+            for j in range(max(0, i - num_errors + pred_length), min(i + 1, pred_length)):
+                intermediate.append(x_values_hat[i - j, j])
+
+            #and if there is anything in the intermediate, then take the median and add to predictions
+            if intermediate:
+                predictions.append(np.median(np.asarray(intermediate)))
+
+    #return the predictions for each time point
+    return np.asarray(predictions[pred_length-1:])
+
+#calculates thresholds above a certain frequency
+def anomalies_calc(threshold, error_array, index):
+    intervals = list()
+    i = 0
+    max_start = len(error_array)
+    while i < max_start:
+        j = i
+        start = index[i]
+        while error_array[i] > threshold:
+            i += 1
+        
+        end = index[i]
+        if start != end:
+            intervals.append((start, end, np.mean(error_array[j: i+1])))
+            
+        i += 1
+        return intervals
