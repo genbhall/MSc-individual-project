@@ -1,4 +1,5 @@
 
+from queue import Empty
 from re import I
 import pandas as pd
 from datetime import datetime, timedelta
@@ -60,22 +61,31 @@ def combine_sleep(df_sleep, start_date, end_date):
         sleep_count = 0
         intermediate.append(start)
         end = start + timedelta(days=1)
+        first_sleep_bool = True
+        first_sleep = str()
+        last_sleep = str()
         
         #iterate through each row
         for i in range(length):
             row_time = df_sleep['start'][i]
             if (row_time < end) and (row_time > start):
+                if first_sleep_bool:
+                    first_sleep = df_sleep['start'][i].strftime("%H:%M:%S")
+                    first_sleep_bool = False
                 total_sleep = total_sleep + df_sleep['Duration'][i]
+                last_sleep = df_sleep['end'][i].strftime("%H:%M:%S")
                 sleep_count += 1
-        
-        intermediate.append(total_sleep)
+        intermediate.append(round(total_sleep,2))
+        intermediate.append(first_sleep)
+        intermediate.append(last_sleep)
         intermediate.append(sleep_count)
         intervals.append(intermediate)
 
         start = start + timedelta(days=1)
         end = end + timedelta(days=1)
 
-    columns = ['Date-nightof','total_sleep', 'sleep_count']
+    columns = ['Date','total_sleep','first_sleep','last_sleep', 'sleep_count']
     df_output = pd.DataFrame(intervals, columns=columns)
 
     return df_output
+
