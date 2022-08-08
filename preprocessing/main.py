@@ -1,6 +1,6 @@
 import pandas as pd
 import datetime
-from preprocessing import create_cumulativeTime_col, convert_to_timeseries, add_datetime_column
+from supporting_func.preprocessing import create_cumulativeTime_col, convert_to_timeseries, add_datetime_column
 from global_variables.global_variables import filename, data_name, start_date, interval
 
 #file processes selected csv files from HH series in CASAS to binary time series of activities 

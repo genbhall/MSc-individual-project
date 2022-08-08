@@ -6,6 +6,7 @@ filename_proc = "processed_data/hh101/hh101_preprocessed_60sw.csv"
 data_name = 'hh101'
 interval = 60
 start_date = datetime(2012,7,20,0,0,0)
+end_date = datetime(2012,9,17,0,0,0)
 all_activities = [
     'timestamp', 
     'Step_Out', 
@@ -43,4 +44,9 @@ all_activities = [
     'Wash_Dinner_Dishes', 
     'Wash_Dishes', 
     'Entertain_Guests',
+]
+sleep_activities = [
+    'timestamp',
+    'Date', 
+    'Sleep', 
 ]
