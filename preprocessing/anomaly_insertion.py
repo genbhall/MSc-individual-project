@@ -38,7 +38,7 @@ existing_anomalies_hh101 = {
 #Random 2.5h nap
 sleep_random_anomaly = {
     'start': ['2012-09-08 14:00:00'],
-    'end': ['2012-08-26 16:35:00'],
+    'end': ['2012-09-08 16:35:00'],
     'Activity': ['Sleep'],
 }
 
@@ -46,7 +46,7 @@ sleep_random_anomaly = {
 sleep_break_anomaly = {
     'start': ['2012-09-12 02:30:00'],
     'end': ['2012-09-12 03:30:00'],
-    'Activity': ['Watch_TV',],
+    'Activity': ['Watch_TV'],
 }
 
 #Additional Sleep Anomalies EXCLUDED ------------------------------------------------------------
