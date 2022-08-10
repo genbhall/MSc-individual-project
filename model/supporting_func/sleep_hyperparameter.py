@@ -1,3 +1,4 @@
+from cmath import nan
 from supporting_func.supporting_func import time_segments_aggregate, rolling_window_sequences, \
     save_model, anomalies_calc
 from sklearn.preprocessing import MinMaxScaler
@@ -7,10 +8,10 @@ from config.model import hyperparameters
 from orion.primitives.tadgan import TadGAN, score_anomalies
 from orion.evaluation.contextual import contextual_recall, contextual_f1_score, contextual_precision
 
-#possible options
-window_szs = [100,200,400]
-time_intervals = [1800,300]
-epochs_range = [5,10,30,50]
+#possible options [HAVE NOT YET DONE 100wsz on 300]
+window_szs = [200, 400]
+time_intervals = [300]
+epochs_range = [30,50]
 latent_dims = [5,10,20]
 score_windows = [5,10,50]
 thresholds = [5,8,10]
@@ -19,10 +20,11 @@ thresholds = [5,8,10]
 #input the dataframes for training and valid test
 def hyperparameter_tuning(df_train, df_valid, ground_truth):
     
+    #reload from old version - line 324
     #optimal hyperparameter combination
-    highest_f1 = 0.
-    highest_precision = 0.
-    highest_recall = 0.
+    highest_f1 = 0.84
+    highest_precision = 1.0
+    highest_recall = 0.9
     log_file = open('hyperparam_logs/sleep/log_file_sleep.txt', 'a')
     
     #tracking optimal hyperparameters
@@ -32,6 +34,7 @@ def hyperparameter_tuning(df_train, df_valid, ground_truth):
     
     #fit the time intervals first
     for time_interval in time_intervals:
+
         #breakout the df into numpy arrays for training
         x_val_train, index_train = time_segments_aggregate(df_train, 
                                                 interval=time_interval)
@@ -109,38 +112,30 @@ def hyperparameter_tuning(df_train, df_valid, ground_truth):
                             if f1_overlap > highest_f1:
                                 save_model(tgan, "sleep/f1_high_sleep.pickle")
                                 highest_f1 = f1_overlap
-                                optimal_f1_combination = [window_sz, time_interval, epochs, latent_dim, score_window, threshold] 
+                                optimal_f1_combination = [window_sz, time_interval, epochs, latent_dim, score_window, threshold, f1_overlap] 
                                 optimal_combo = open("hyperparam_logs/sleep/optimal_combo_sleep.txt","w")
-                                optimal_combo.write(f"Optimal_f1: {optimal_f1_combination} \n \
-                                    Optimal_prec: {optimal_precision_combination} \n \
-                                    Optimal_recall: {optimal_recall_combination} \n")
+                                optimal_combo.write(f"Optimal_f1: {optimal_f1_combination} \nOptimal_prec: {optimal_precision_combination} \nOptimal_recall: {optimal_recall_combination} \n")
                                 optimal_combo.close()
                             if precision_overlap > highest_precision:
                                 save_model(tgan, "sleep/precision_high_sleep.pickle")
                                 highest_precision = precision_overlap
-                                optimal_precision_combination = [window_sz, time_interval, epochs, latent_dim, score_window, threshold]
+                                optimal_precision_combination = [window_sz, time_interval, epochs, latent_dim, score_window, threshold, precision_overlap]
                                 optimal_combo = open(f"hyperparam_logs/sleep/optimal_combo_sleep.txt","w")
-                                optimal_combo.write("Optimal_f1: {optimal_f1_combination} \n \
-                                    Optimal_prec: {optimal_precision_combination} \n \
-                                    Optimal_recall: {optimal_recall_combination} \n")
+                                optimal_combo.write("Optimal_f1: {optimal_f1_combination} \nOptimal_prec: {optimal_precision_combination} \nOptimal_recall: {optimal_recall_combination} \n")
                                 optimal_combo.close() 
                             if recall_overlap > highest_recall:
                                 save_model(tgan, "sleep/recall_high_sleep.pickle")
                                 highest_recall = recall_overlap
-                                optimal_recall_combination = [window_sz, time_interval, epochs, latent_dim, score_window, threshold] 
+                                optimal_recall_combination = [window_sz, time_interval, epochs, latent_dim, score_window, threshold, recall_overlap] 
                                 optimal_combo = open("hyperparam_logs/sleep/optimal_combo_sleep.txt","w")
-                                optimal_combo.write(f"Optimal_f1: {optimal_f1_combination} \n \
-                                    Optimal_prec: {optimal_precision_combination} \n \
-                                    Optimal_recall: {optimal_recall_combination} \n")
+                                optimal_combo.write(f"Optimal_f1: {optimal_f1_combination} \nOptimal_prec: {optimal_precision_combination} \nOptimal_recall: {optimal_recall_combination} \n")
                                 optimal_combo.close()
                                 
                             #print metrics - NO ACCURACY BECAUSE NO TRUE NEGATIVES
-                            print(f"Model: (wsz:{window_sz}, ti:{time_interval}, epochs:{epochs}, ld:{latent_dims}, sw:{score_window}, \
-                                                thresh:{threshold}) -- f1: {f1_overlap} | Precision: {precision_overlap} | recall: {recall_overlap}")
+                            print(f"Model: (wsz:{window_sz}, ti:{time_interval}, epochs:{epochs}, ld:{latent_dim}, sw:{score_window}, thresh:{threshold}) -- f1: {f1_overlap} | Precision: {precision_overlap} | recall: {recall_overlap}")
                             
                             #write output to file logs
-                            log_file.write(f"\n{window_sz},{time_interval},{epochs},{latent_dim},{score_window},{threshold},\
-                                {f1_overlap},{precision_overlap},{recall_overlap}")
-                       
+                            log_file.write(f"\n{window_sz},{time_interval},{epochs},{latent_dim},{score_window},{threshold},{f1_overlap},{precision_overlap},{recall_overlap}")
+    
     log_file.close()
     print("FINISHED!!")
