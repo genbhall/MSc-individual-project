@@ -8,10 +8,10 @@ from config.model import hyperparameters
 from orion.primitives.tadgan import TadGAN, score_anomalies
 from orion.evaluation.contextual import contextual_recall, contextual_f1_score, contextual_precision
 
-#possible options [HAVE NOT YET DONE 100wsz on 300]
-window_szs = [200, 400]
+#possible options
+window_szs = [600]
 time_intervals = [300]
-epochs_range = [30,50]
+epochs_range = [50]
 latent_dims = [5,10,20]
 score_windows = [5,10,50]
 thresholds = [5,8,10]
