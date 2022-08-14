@@ -1,6 +1,6 @@
 from supporting_func.supporting_func import split_data, convert_dfdatetotime
 from global_variables.global_variables import all_activities, filename_test, filename_summary
-from supporting_func.sleep_hyperparameter import hyperparameter_tuning
+from supporting_func.sleep_hyperparameter import hyperparameter_tuning, model_distribution_tuning
 
 import pandas as pd
 
@@ -16,6 +16,9 @@ if __name__ == "__main__":
     #prepare the relevant ground truth file
     ground_truth = convert_dfdatetotime(ground_truth)
     
-    hyperparameter_tuning(df_train, df_valid, ground_truth)
+    #hyperparameter tuning
+    # hyperparameter_tuning(df_train, df_valid, ground_truth)
     
+    #test for distributions of top 10 models
+    model_distribution_tuning(df_train, df_valid, ground_truth)
     
