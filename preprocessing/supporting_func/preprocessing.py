@@ -4,6 +4,11 @@ import datetime
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
+#input unedited hh df and returns list of unique activities
+def unique_activities(df):
+    activities = df['activity'].unique()
+    return activities
+
 #takes in dataframe from HH series - adds new column in pandas with cumulative time across the dataset
 def create_cumulativeTime_col(df):
     
