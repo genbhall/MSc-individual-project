@@ -104,6 +104,7 @@ def hyperparameter_tuning(df_train, df_valid, ground_truth):
                             anomalies = pd.DataFrame(intervals, columns=['start', 'end', 'score'])
                             
                             #calculate appropriate metrics - weighted = false (overlap method)
+                            #precision = TP/(TP+FP) Recall = TP/(TP+FN)
                             f1_overlap = round(contextual_f1_score(ground_truth, anomalies, df_valid, weighted=False),2)
                             precision_overlap = round(contextual_precision(ground_truth, anomalies, df_valid, weighted=False),2)
                             recall_overlap = round(contextual_recall(ground_truth, anomalies, df_valid, weighted=False),2)
@@ -147,100 +148,101 @@ def model_distribution_tuning(df_train, df_valid, ground_truth, iteration=10):
     df = pd.read_csv("hyperparam_logs/sleep/F1_top_5.csv")
     model_params = df.to_numpy()
 
-    for model_param in model_params:
+    
+    for index, model_param in enumerate(model_params):
         
-        model_count = 1
+        if index > 2:
+            print(index)
+            print(model_param)
+            #set the model parameters
+            window_sz = int(model_param[1])
+            time_interval = int(model_param[2])
+            epochs = int(model_param[3])
+            latent_dim = int(model_param[4])
+            score_window = int(model_param[5])
+            threshold = int(model_param[6])
 
-        #set the model parameters
-        window_sz = model_param[1]
-        time_interval = model_param[2]
-        epochs = model_param[3]
-        latent_dim = model_param[4]
-        score_window = model_param[5]        
-        threshold = model_param[6]
+            for i in range(iteration):
+                
+                log_file = open('hyperparam_logs/sleep/hyper_param_distribution.txt', 'a')
+                
+                #breakout the df into numpy arrays for training
+                x_val_train, index_train = time_segments_aggregate(df_train, 
+                                                        interval=time_interval)
+                
+                #breakout the df into numpy arrays for validation
+                x_val_valid, index_valid = time_segments_aggregate(df_valid, 
+                                                        interval=time_interval)
+                
+                #scale everything from -1 to 1 using sklearn package
+                scaler = MinMaxScaler(feature_range=(-1, 1))
+                x_val_train = scaler.fit_transform(x_val_train)
+                x_val_valid = scaler.fit_transform(x_val_valid)
 
-        for i in range(iteration):
-            
-            log_file = open('hyperparam_logs/sleep/hyper_param_distribution.txt', 'a')
-            
-            #breakout the df into numpy arrays for training
-            x_val_train, index_train = time_segments_aggregate(df_train, 
-                                                    interval=time_interval)
-            
-            #breakout the df into numpy arrays for validation
-            x_val_valid, index_valid = time_segments_aggregate(df_valid, 
-                                                    interval=time_interval)
-            
-            #scale everything from -1 to 1 using sklearn package
-            scaler = MinMaxScaler(feature_range=(-1, 1))
-            x_val_train = scaler.fit_transform(x_val_train)
-            x_val_valid = scaler.fit_transform(x_val_valid)
+                #split into rolling window sequences - x_val_train = windows, y = without split into windows
+                x_val_train, _, _, _ = rolling_window_sequences(x_val_train, index_train, 
+                                                                window_size=window_sz, 
+                                                                target_size=1, 
+                                                                step_size=1,
+                                                                target_column=0)
+                
+                #split into rolling window sequences - x_val_train = windows, y = without split into windows
+                x_val_valid, _, values_index_valid, _ = rolling_window_sequences(x_val_valid, index_valid, 
+                                                                window_size=window_sz, 
+                                                                target_size=1, 
+                                                                step_size=1,
+                                                                target_column=0)
 
-            #split into rolling window sequences - x_val_train = windows, y = without split into windows
-            x_val_train, _, _, _ = rolling_window_sequences(x_val_train, index_train, 
-                                                            window_size=window_sz, 
-                                                            target_size=1, 
-                                                            step_size=1,
-                                                            target_column=0)
-            
-            #split into rolling window sequences - x_val_train = windows, y = without split into windows
-            x_val_valid, _, values_index_valid, _ = rolling_window_sequences(x_val_valid, index_valid, 
-                                                            window_size=window_sz, 
-                                                            target_size=1, 
-                                                            step_size=1,
-                                                            target_column=0)
+                #Train the model
+                hyperparameters["epochs"] = epochs
+                hyperparameters["input_shape"] = (window_sz, 1) # based on the window size
+                hyperparameters["target_shape"] = (window_sz, 1) # based on the window size
+                hyperparameters["optimizer"] = "keras.optimizers.Adam"
+                hyperparameters["learning_rate"] = 0.0005
+                hyperparameters["latent_dim"] = latent_dim
+                hyperparameters["batch_size"] = 64
+                hyperparameters["layers_generator"][1]["parameters"]["units"] = int(window_sz/2)
+                hyperparameters["layers_encoder"][2]["parameters"]["units"] = int(latent_dim)
 
-            #Train the model
-            hyperparameters["epochs"] = epochs
-            hyperparameters["input_shape"] = (window_sz, 1) # based on the window size
-            hyperparameters["target_shape"] = (window_sz, 1) # based on the window size
-            hyperparameters["optimizer"] = "keras.optimizers.Adam"
-            hyperparameters["learning_rate"] = 0.0005
-            hyperparameters["latent_dim"] = latent_dim
-            hyperparameters["batch_size"] = 64
-            hyperparameters["layers_generator"][1]["parameters"]["units"] = int(window_sz/2)
-            hyperparameters["layers_encoder"][2]["parameters"]["units"] = int(latent_dim)
-
-            #build model and fit with data
-            tgan = TadGAN(**hyperparameters)
-            tgan.fit(x_val_train)
-
-
-            #this reconstructs the values and gives the critic score for each input sequence
-            x_val_hat_valid, critic_valid = tgan.predict(x_val_valid)
+                #build model and fit with data
+                tgan = TadGAN(**hyperparameters)
+                tgan.fit(x_val_train)
 
 
-            #anomaly scoring - score window - Size of the window over which the scores are calculated
-            error, _, _, _ = score_anomalies(x_val_valid, 
-                                                            x_val_hat_valid, 
-                                                            critic_valid, 
-                                                            values_index_valid,
-                                                            score_window=score_window,
-                                                            rec_error_type="dtw", 
-                                                            comb="mult")
-            
+                #this reconstructs the values and gives the critic score for each input sequence
+                x_val_hat_valid, critic_valid = tgan.predict(x_val_valid)
 
-            #calculate what counts as an anomaly based on threshold
-            intervals = anomalies_calc(threshold, error, index_valid)
-            anomalies = pd.DataFrame(intervals, columns=['start', 'end', 'score'])
-            
-            #calculate appropriate metrics - weighted = false (overlap method)
-            f1_overlap = round(contextual_f1_score(ground_truth, anomalies, df_valid, weighted=False),2)
-            precision_overlap = round(contextual_precision(ground_truth, anomalies, df_valid, weighted=False),2)
-            recall_overlap = round(contextual_recall(ground_truth, anomalies, df_valid, weighted=False),2)
 
-            #save the model parameters
-            save_model(tgan, f"sleep/model_{model_count}/sleep_model_{i}.pickle")            
+                #anomaly scoring - score window - Size of the window over which the scores are calculated
+                error, _, _, _ = score_anomalies(x_val_valid, 
+                                                                x_val_hat_valid, 
+                                                                critic_valid, 
+                                                                values_index_valid,
+                                                                score_window=score_window,
+                                                                rec_error_type="dtw", 
+                                                                comb="mult")
+                
 
-            #print metrics - NO ACCURACY BECAUSE NO TRUE NEGATIVES
-            print(f"Model: (wsz:{window_sz}, ti:{time_interval}, epochs:{epochs}, ld:{latent_dim}, sw:{score_window}, thresh:{threshold}) -- f1: {f1_overlap} | Precision: {precision_overlap} | recall: {recall_overlap}")
-            
-            #write output to file logs
-            log_file.write(f"\n{window_sz},{time_interval},{epochs},{latent_dim},{score_window},{threshold},{f1_overlap},{precision_overlap},{recall_overlap}")
-            log_file.close()
+                #calculate what counts as an anomaly based on threshold
+                intervals = anomalies_calc(threshold, error, index_valid)
+                anomalies = pd.DataFrame(intervals, columns=['start', 'end', 'score'])
+                
+                #calculate appropriate metrics - weighted = false (overlap method)
+                f1_overlap = round(contextual_f1_score(ground_truth, anomalies, df_valid, weighted=False),2)
+                precision_overlap = round(contextual_precision(ground_truth, anomalies, df_valid, weighted=False),2)
+                recall_overlap = round(contextual_recall(ground_truth, anomalies, df_valid, weighted=False),2)
 
-            del x_val_train, x_val_valid, index_train, index_valid
+                #print metrics - NO ACCURACY BECAUSE NO TRUE NEGATIVES
+                print(f"Model: (wsz:{window_sz}, ti:{time_interval}, epochs:{epochs}, ld:{latent_dim}, sw:{score_window}, thresh:{threshold}) -- f1: {f1_overlap} | Precision: {precision_overlap} | recall: {recall_overlap}")
+                
+                #write output to file logs
+                log_file.write(f"\n{window_sz},{time_interval},{epochs},{latent_dim},{score_window},{threshold},{f1_overlap},{precision_overlap},{recall_overlap}")
+                log_file.close()
 
-        model_count += 1
+                del x_val_train, x_val_valid, index_train, index_valid
+
+                #save the model parameters
+                model = index + 1
+                save_model(tgan, f"sleep/model_{model}/sleep_model_{i}.pickle")            
 
     print("FINISHED!!")
