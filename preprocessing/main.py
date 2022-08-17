@@ -1,6 +1,6 @@
 import pandas as pd
 import datetime
-from supporting_func.preprocessing import create_cumulativeTime_col, convert_to_timeseries, add_datetime_column
+from supporting_func.preprocessing import create_cumulativeTime_col, convert_to_timeseries, add_datetime_column, unique_activities
 from global_variables.global_variables import filename, data_name, start_date, interval
 
 #file processes selected csv files from HH series in CASAS to binary time series of activities 
@@ -9,6 +9,8 @@ def example_main():
 
     #read the CSV file
     df = pd.read_csv(filename)
+
+    # print(unique_activities(df))
 
     #cumulativeTime column created from day1 000 (equivalent to first second of first day)
     df = create_cumulativeTime_col(df)

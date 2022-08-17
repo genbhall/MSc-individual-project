@@ -52,49 +52,151 @@ from datetime import datetime
 # ]
 
 # hh111 variables
-filename = "../CASAS_dataset/hh111/hh111.ann.features.csv"
-filename_proc = "processed_data/hh111/hh111_preprocessed_60sw.csv"
-data_name = 'hh111'
+# filename = "../CASAS_dataset/hh111/hh111.ann.features.csv"
+# filename_proc = "processed_data/hh111/hh111_preprocessed_60sw.csv"
+# data_name = 'hh111'
+# interval = 60
+# start_date = datetime(2011,6,15,0,0,0)
+# end_date = datetime(2011,8,14,0,0,0)
+# all_activities = [
+#     'timestamp'
+#     'Sleep',
+#     'Other_Activity',
+#     'Bed_Toilet_Transition',
+#     'Personal_Hygiene',
+#     'Dress',
+#     'Morning_Meds',
+#     'Cook_Breakfast',
+#     'Eat_Breakfast',
+#     'Wash_Breakfast_Dishes',
+#     'Read',
+#     'Toilet',
+#     'Leave_Home',
+#     'Enter_Home',
+#     'Drink',
+#     'Work_On_Computer',
+#     'Cook',
+#     'Eat',
+#     'Wash_Dishes',
+#     'Cook_Dinner',
+#     'Eat_Dinner',
+#     'Wash_Dinner_Dishes',
+#     'Watch_TV',
+#     'Work_At_Desk',
+#     'Groom',
+#     'Evening_Meds',
+#     'Bathe',
+#     'Step_Out',
+#     'Phone',
+#     'Cook_Lunch',
+#     'Eat_Lunch',
+#     'Wash_Lunch_Dishes',
+#     'Relax',
+#     'Work_At_Table',
+#     'Entertain_Guests',
+#     'Work',
+# ]
+
+# sleep_activities = [
+#     'timestamp',
+#     'Date', 
+#     'Sleep', 
+# ]
+
+
+# # hh102 variables
+# filename = "../CASAS_dataset/hh102/hh102.ann.features.csv"
+# filename_proc = "processed_data/hh102/hh102_preprocessed_60sw.csv"
+# data_name = 'hh102'
+# interval = 60
+# start_date = datetime(2011,6,15,0,0,0)
+# end_date = datetime(2011,8,15,0,0,0)
+# all_activities = [
+#     'Other_Activity',
+#     'Bed_Toilet_Transition',
+#     'Sleep',
+#     'Toilet',
+#     'Morning_Meds',
+#     'Dress',
+#     'Read',
+#     'Cook_Breakfast',
+#     'Eat_Breakfast',
+#     'Wash_Breakfast_Dishes',
+#     'Relax',
+#     'Sleep_Out_Of_Bed',
+#     'Personal_Hygiene',
+#     'Take_Medicine',
+#     'Work',
+#     'Bathe',
+#     'Groom',
+#     'Cook_Lunch',
+#     'Eat_Lunch',
+#     'Wash_Lunch_Dishes',
+#     'Drink',
+#     'Watch_TV',
+#     'Leave_Home',
+#     'Enter_Home',
+#     'Cook_Dinner',
+#     'Eat_Dinner',
+#     'Wash_Dinner_Dishes',
+#     'Work_At_Table',
+#     'Cook',
+#     'Eat',
+#     'Wash_Dishes',
+#     'Phone',
+#     'Step_Out',
+#     'Entertain_Guests'
+# ]
+
+# sleep_activities = [
+#     'timestamp',
+#     'Date', 
+#     'Sleep', 
+# ]
+
+# hh120 variables
+filename = "../CASAS_dataset/hh120/hh120.ann.features.csv"
+filename_proc = "processed_data/hh120/hh120_preprocessed_60sw.csv"
+data_name = 'hh120'
 interval = 60
-start_date = datetime(2011,6,15,0,0,0)
-end_date = datetime(2011,8,14,0,0,0)
+start_date = datetime(2012,1,28,0,0,0)
+end_date = datetime(2012,3,31,0,0,0)
 all_activities = [
-    'timestamp'
     'Sleep',
     'Other_Activity',
     'Bed_Toilet_Transition',
-    'Personal_Hygiene',
-    'Dress',
-    'Morning_Meds',
-    'Cook_Breakfast',
-    'Eat_Breakfast',
-    'Wash_Breakfast_Dishes',
-    'Read',
     'Toilet',
+    'Relax',
+    'Dress',
+    'Personal_Hygiene',
+    'Morning_Meds',
+    'Wash_Dishes',
     'Leave_Home',
     'Enter_Home',
-    'Drink',
+    'Watch_TV',
+    'Entertain_Guests',
     'Work_On_Computer',
+    'Work_At_Table',
     'Cook',
     'Eat',
-    'Wash_Dishes',
-    'Cook_Dinner',
-    'Eat_Dinner',
-    'Wash_Dinner_Dishes',
-    'Watch_TV',
-    'Work_At_Desk',
-    'Groom',
-    'Evening_Meds',
+    'Take_Medicine',
+    'Drink',
     'Bathe',
     'Step_Out',
-    'Phone',
+    'Evening_Meds',
+    'Read',
+    'Cook_Breakfast',
+    'Eat_Breakfast',
+    'Groom',
     'Cook_Lunch',
     'Eat_Lunch',
     'Wash_Lunch_Dishes',
-    'Relax',
-    'Work_At_Table',
-    'Entertain_Guests',
-    'Work',
+    'Sleep_Out_Of_Bed',
+    'Cook_Dinner',
+    'Eat_Dinner',
+    'Wash_Dinner_Dishes',
+    'Phone',
+    'Wash_Breakfast_Dishes'
 ]
 
 sleep_activities = [

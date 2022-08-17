@@ -1,20 +1,18 @@
 
-from queue import Empty
-from re import I
 import pandas as pd
 from datetime import datetime, timedelta
+from math import ceil
 
 #takes an activity, return pandas version of 
 def strip_activity(activity, df_input):
     
     #create the output df
     sleeping = False
-    i=0
-    max_index = len(df_input)-1
+    i=df_input.index.tolist()[0]
+    max_index = df_input.index.tolist()[-1]
     intervals = list()
 
     while i < max_index:
-
         #skips row to sleep stage
         while (i < max_index) and (df_input[activity][i] != 1):
             i += 1
@@ -47,7 +45,8 @@ def strip_activity(activity, df_input):
     df_output = pd.DataFrame(intervals, columns=columns)
 
     return df_output
-    
+
+#combines all sleep from a particular data into one entry in a pandas dataframe
 def combine_sleep(df_sleep, start_date, end_date):
     
     intervals = list()
@@ -89,3 +88,34 @@ def combine_sleep(df_sleep, start_date, end_date):
 
     return df_output
 
+#split data into groups of times based on days interval. 
+#Returns dictionary of intervals - date input is name of Date column
+def split_data(df, interval, date='Date'):
+    start_date = datetime.strptime(df[date].min(), '%Y-%m-%d %H:%M:%S')
+    end_date = datetime.strptime(df[date].max(), '%Y-%m-%d %H:%M:%S')
+    delta = (end_date - start_date).days + 1
+    splits = ceil(delta/interval)
+
+    dict_pd = {}
+    end_interval = start_date.date() + timedelta(days=interval)
+    total_rows = df.shape[0]
+    start_row = 0
+    count = start_row
+    count_date = datetime.strptime(df[date][count], '%Y-%m-%d %H:%M:%S').date()
+
+    #for each interval 
+    for num in range(0,splits):
+                
+        #find last row lower than interval
+        while ((count_date < end_interval) and (count < (total_rows-1))):
+            count += 1
+            count_date = datetime.strptime(df[date][count], '%Y-%m-%d %H:%M:%S').date()
+
+        dict_pd[num] = df.iloc[start_row:count, :]
+        start_row = count
+
+        #move onto the next iteration of start / end intervals
+        start_date = end_interval
+        end_interval = start_date + timedelta(days=interval)
+        
+    return dict_pd
