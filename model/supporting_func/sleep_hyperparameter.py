@@ -1,4 +1,3 @@
-from cmath import nan
 from supporting_func.supporting_func import time_segments_aggregate, rolling_window_sequences, \
     save_model, anomalies_calc
 from sklearn.preprocessing import MinMaxScaler
