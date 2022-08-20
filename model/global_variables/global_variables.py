@@ -11,7 +11,7 @@ all_activities = [
     'timestamp', 
     # 'Step_Out', 
     # 'Other_Activity',
-    # 'Toilet', 
+    'Toilet', 
     # 'Phone', 
     # 'Personal_Hygiene', 
     # 'Leave_Home', 
