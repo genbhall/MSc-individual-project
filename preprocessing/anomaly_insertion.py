@@ -33,23 +33,95 @@ existing_anomalies_hh101 = {
     ],
 }
 
+
+#took a nap at 14:30
+#nap in the late morning - woke up at 9am and then slept after again
+#took a nap at 17:40 and also another one in the morning
+#slept 10.5h (1std beyond average) - should be lower rating
+#nap taken 
+#nap taken in late morning - slept 11h (1+ std dev)
+
+existing_anomalies_hh120 = {
+    'start': [
+        '2012-02-29 14:30:00',
+        '2012-03-09 10:39:00',
+        '2012-03-11 17:40:00',
+        '2012-03-13 21:21:00',
+        '2012-03-16 14:00:00',
+        '2012-03-25 21:35:00',
+    ],
+    'end': [
+        '2012-02-29 15:48:00',
+        '2012-03-09 11:54:00',
+        '2012-03-12 11:32:00',
+        '2012-03-14 08:03:00',
+        '2012-03-16 15:13:00',
+        '2012-03-26 12:11:00',
+    ]
+}
+
 #Additional Synthetic Sleep Anomalies To include ------------------------------------------------------------
 
-#Random 2.5h nap
-sleep_random_anomaly = {
-    'start': ['2012-09-08 14:00:00'],
-    'end': ['2012-09-08 16:35:00'],
-    'Activity': ['Sleep'],
+#----------HH101--------------------------
+
+# #Random 2.5h nap
+# sleep_random_anomaly = {
+#     'start': ['2012-09-08 14:00:00'],
+#     'end': ['2012-09-08 16:35:00'],
+#     'Activity': ['Sleep'],
+# }
+
+# #Wake up for an hour
+# sleep_break_anomaly = {
+#     'start': ['2012-09-12 02:30:00'],
+#     'end': ['2012-09-12 03:30:00'],
+#     'Activity': ['Watch_TV'],
+# }
+
+#----------HH120--------------------------
+
+#sleep for a couple of hours less (night) -1.5h (5.7h)
+sleep_lack_of_1 = {
+    'start': ['2012-02-27 23:19:00'],
+    'end': ['2012-02-28 00:49:00'],
+    'Activity': ['Watch_TV'],
+}
+
+#Goes to toilet multiple times
+sleep_multiple_wake_ups = {
+    'start': [
+            '2012-03-04 22:06:00',
+            '2012-03-05 00:52:00',
+            '2012-03-05 04:25:00'
+            ],
+    'end': [
+            '2012-03-04 22:18:00',
+            '2012-03-05 01:07:00',
+            '2012-03-05 04:40:00'
+            ],
+    'Activity': [
+            'Toilet',
+            'Toilet',
+            'Toilet',
+            ],
+}
+
+#sleep for a couple of hours less (Morning) (5.7h)
+sleep_lack_of_2 = {
+    'start': ['2012-03-19 06:08:00'],
+    'end': ['2012-03-19 08:13:00'],
+    'Activity': ['Watch_TV'],
 }
 
 #Wake up for an hour
 sleep_break_anomaly = {
-    'start': ['2012-09-12 02:30:00'],
-    'end': ['2012-09-12 03:30:00'],
+    'start': ['2012-03-20 00:00:00'],
+    'end': ['2012-03-20 01:00:00'],
     'Activity': ['Watch_TV'],
 }
 
 #Additional Sleep Anomalies EXCLUDED ------------------------------------------------------------
+
 
 
 #sleeps +5 hours longer - ALREADY EXISTS
@@ -164,10 +236,18 @@ eating_anomaly = {
 # *Exclude section complete* -----------------------------------------------------------------
 
 
+# #synth_anomalies_hh101
+# synth_anomalies_hh101 = [
+#     sleep_random_anomaly
+#     sleep_break_anomaly,
+# ]
+
 #synth_anomalies
-synth_anomalies = [
-    sleep_random_anomaly,
-    sleep_break_anomaly
+synth_anomalies_hh120 = [
+    sleep_break_anomaly,
+    sleep_lack_of_1,
+    sleep_lack_of_2,
+    sleep_multiple_wake_ups
 ]
 
 def anom_summary(anomaly):
@@ -211,12 +291,12 @@ def insert_anomaly(anomaly,df):
 def example_main():
     df = pd.read_csv(filename_proc)
     summary_anomalies = []
-    for anomaly in synth_anomalies:
+    for anomaly in synth_anomalies_hh120:
         insert_anomaly(anomaly, df)
         summary_anomaly = anom_summary(anomaly)
         summary_anomalies.append(summary_anomaly)
     df_sum = pd.DataFrame(summary_anomalies, columns= ['start', 'end'])
-    df_known_sum = pd.DataFrame(existing_anomalies_hh101, columns= ['start', 'end'])
+    df_known_sum = pd.DataFrame(existing_anomalies_hh120, columns= ['start', 'end'])
     df_sum = df_sum.append(df_known_sum)
 
     df.to_csv(f"processed_data/anomalous/{data_name}/{data_name}_anomalous_{interval}sw.csv")
