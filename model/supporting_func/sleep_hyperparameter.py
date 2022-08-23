@@ -8,10 +8,10 @@ from orion.primitives.tadgan import TadGAN, score_anomalies
 from orion.evaluation.contextual import contextual_recall, contextual_f1_score, contextual_precision
 
 #possible options
-window_szs = [100,200,400]
-time_intervals = [1800,300]
-epochs_range = [5,10,30,50]
-latent_dims = [5,10,20]
+window_szs = [400]
+time_intervals = [300]
+epochs_range = [30]
+latent_dims = [20]
 score_windows = [5,10,50]
 thresholds = [5,8,10]
 
@@ -21,9 +21,9 @@ def hyperparameter_tuning(df_train, df_valid, ground_truth):
     
     #reload from old version - line 324
     #optimal hyperparameter combination
-    highest_f1 = 0.84
-    highest_precision = 1.0
-    highest_recall = 0.9
+    highest_f1 = 0.
+    highest_precision = 0.
+    highest_recall = 0.
     log_file = open('hyperparam_logs/sleep/log_file_sleep.txt', 'a')
     
     #tracking optimal hyperparameters
