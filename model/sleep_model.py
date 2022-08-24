@@ -19,6 +19,7 @@ if __name__ == "__main__":
     #hyperparameter tuning
     hyperparameter_tuning(df_train, df_valid, ground_truth)
     
-    #test for distributions of top 5 models - saves outcomes in new file
+    # This is saved
+    # #test for distributions of top 5 models - saves outcomes in new file
     # model_distribution_tuning(df_train, df_valid, ground_truth)
     
