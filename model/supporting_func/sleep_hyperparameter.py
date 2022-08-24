@@ -8,10 +8,10 @@ from orion.primitives.tadgan import TadGAN, score_anomalies
 from orion.evaluation.contextual import contextual_recall, contextual_f1_score, contextual_precision
 
 #possible options
-window_szs = [400]
-time_intervals = [300]
-epochs_range = [30]
-latent_dims = [20]
+window_szs = [100,200,400]
+time_intervals = [300,1800]
+epochs_range = [5,10,30,50]
+latent_dims = [5,10,20]
 score_windows = [5,10,50]
 thresholds = [5,8,10]
 
