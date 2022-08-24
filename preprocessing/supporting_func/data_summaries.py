@@ -133,5 +133,7 @@ def convert_to_hours(array, night_time=True):
             if (hours < 12 and night_time):
                 hours = hours + 24
             result.append(hours)
+        else:
+            result.append(np.nan)
     result = np.asarray(result)
     return result
