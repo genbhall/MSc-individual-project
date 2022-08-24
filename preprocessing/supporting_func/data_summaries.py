@@ -2,6 +2,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
 from math import ceil
+import numpy as np
 
 #takes an activity, return pandas version of 
 def strip_activity(activity, df_input):
@@ -119,3 +120,18 @@ def split_data(df, interval, date='Date'):
         end_interval = start_date + timedelta(days=interval)
         
     return dict_pd
+
+#converts array of time strings to time of day (EXCLUDES EMPTY CELLS)
+def convert_to_hours(array, night_time=True):
+    result = []
+    for i in array:
+        if i != '':
+            i_date = datetime.strptime(i, '%H:%M:%S')
+            hours = i_date.hour + i_date.minute/60 + i_date.second/(60*60)
+
+            #this is if sleeping after 12 that day - make it go up
+            if (hours < 12 and night_time):
+                hours = hours + 24
+            result.append(hours)
+    result = np.asarray(result)
+    return result
