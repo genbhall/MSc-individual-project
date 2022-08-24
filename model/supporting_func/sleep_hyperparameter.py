@@ -207,7 +207,6 @@ def model_distribution_tuning(df_train, df_valid, ground_truth, iteration=10):
                 tgan = TadGAN(**hyperparameters)
                 tgan.fit(x_val_train)
 
-
                 #this reconstructs the values and gives the critic score for each input sequence
                 x_val_hat_valid, critic_valid = tgan.predict(x_val_valid)
 

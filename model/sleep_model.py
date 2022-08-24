@@ -17,9 +17,10 @@ if __name__ == "__main__":
     ground_truth = convert_dfdatetotime(ground_truth)
     
     #hyperparameter tuning
-    hyperparameter_tuning(df_train, df_valid, ground_truth)
+    # hyperparameter_tuning(df_train, df_valid, ground_truth)
     
     # This is saved
-    # #test for distributions of top 5 models - saves outcomes in new file
-    # model_distribution_tuning(df_train, df_valid, ground_truth)
+    #test for distributions of top 5 models - saves outcomes in new file
+    top_5_params = pd.read_csv("hyperparam_logs/sleep/F1_top_5.csv")
+    model_distribution_tuning(df_train, df_valid, ground_truth)
     
