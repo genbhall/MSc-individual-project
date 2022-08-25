@@ -6,9 +6,6 @@ import pandas as pd
 
 if __name__ == "__main__":
     
-    print(filename_test)
-    print(filename_summary)
-    
     #read and split the relevant files
     df = pd.read_csv(filename_test)
     ground_truth = pd.read_csv(filename_summary)
