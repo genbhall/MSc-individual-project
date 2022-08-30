@@ -16,6 +16,9 @@ if __name__ == "__main__":
     #prepare the relevant ground truth file
     ground_truth = convert_dfdatetotime(ground_truth)
     
+
+    #commented out hypertuning and distribution testing ------------------------
+
     #hyperparameter tuning
     # hyperparameter_tuning(df_train, df_valid, ground_truth)
     
@@ -23,7 +26,9 @@ if __name__ == "__main__":
     # #test for distributions of top 5 models - saves outcomes in new file
     # top_5_params = pd.read_csv("hyperparam_logs/sleep/F1_top_5.csv")
     # model_distribution_tuning(df_train, df_valid, top_5_params, ground_truth)
-    
+
+    #commented out hypertuning and distribution testing ------------------------
+
     #FINAL TEST FOR EVALUATION PURPOSES ON HH120
     final_model_param = ['',100,1800,10,20,5,5]
     final_distribution_tuning(df_train, df_valid, final_model_param, ground_truth)

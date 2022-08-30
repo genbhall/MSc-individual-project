@@ -9,7 +9,6 @@ import pandas as pd
 #slept 8.72h more than 1std
 #slept 4.13h - should be lower rating
 #slept 8.37h - should be lower rating 
-
 existing_anomalies_hh101 = {
     'start': [
         '2012-08-22 00:00:00',
@@ -40,7 +39,6 @@ existing_anomalies_hh101 = {
 #slept 10.5h (1std beyond average) - should be lower rating
 #nap taken 
 #nap taken in late morning - slept 11h (1+ std dev)
-
 existing_anomalies_hh120 = {
     'start': [
         '2012-02-29 14:30:00',

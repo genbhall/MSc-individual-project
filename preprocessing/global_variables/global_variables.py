@@ -1,3 +1,5 @@
+#Global variables used throughout the /pre-procesing folder. Swap between hh101 and hh120 when needed
+
 from datetime import datetime
 
 # # hh101 variables

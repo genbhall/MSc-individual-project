@@ -1,3 +1,5 @@
+#Global variables used throughout the /model folder. Swap between hh101 and hh120 when needed
+
 from datetime import datetime
 
 # variables to do with the file looked at

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from math import ceil
 import numpy as np
 
-#takes an activity, return pandas version of 
+#takes an activity, return pandas version of that activity
 def strip_activity(activity, df_input):
     
     #create the output df
@@ -46,7 +46,7 @@ def strip_activity(activity, df_input):
 
     return df_output
 
-#combines all sleep from a particular data into one entry in a pandas dataframe
+#combines all sleep from a particular data instance into one entry in a pandas dataframe
 def combine_sleep(df_sleep, start_date, end_date):
     
     intervals = list()

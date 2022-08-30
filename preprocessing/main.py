@@ -3,7 +3,7 @@ import datetime
 from supporting_func.preprocessing import create_cumulativeTime_col, convert_to_timeseries, add_datetime_column, unique_activities
 from global_variables.global_variables import filename, data_name, start_date, interval
 
-#file processes selected csv files from HH series in CASAS to binary time series of activities 
+#file processes selected csv files from HH series in CASAS and turns into binary time series of activities at equal increments 
 
 def example_main():
 

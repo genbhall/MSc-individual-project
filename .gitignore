@@ -1,2 +1,5 @@
 CASAS_dataset/
 .venv/
+model/unused/
+preprocessing/unused/
+logins.txt
